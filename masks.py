@@ -12,7 +12,7 @@ red = np.array([10, 255, 255])
 
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 redmask = cv2.inRange(img_hsv, np.array([0, 60, 50]), np.array([10, 255, 255]))
-greenmask = cv2.inRange(img_hsv, np.array([20, 100, 100]), np.array([60, 255, 255]))
+greenmask = cv2.inRange(img_hsv, np.array([40, 100, 100]), np.array([60, 255, 255]))
 
 cv2.imshow("Red Mask", redmask)
 cv2.imshow("Green Mask", greenmask)
