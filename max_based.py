@@ -8,9 +8,9 @@ import visual
 
 import time #for performace testing
 
-img = cv2.imread("plate2.jpg")
+img = cv2.imread("plate5.jpg")
 
-img = cv2.bilateralFilter(img, 9, 75, 75)
+img = cv2.bilateralFilter(img, 9, 300, 75)
 
 print("Started tracking perfomance")
 t0 = time.time()
@@ -29,6 +29,9 @@ buck = cat.get_buckets(img_red)
 print("Found {} buckets".format(len(buck)))
 print("Tracked {} pixels".format(sum([len(buck[p]) for p in buck])))
 t1 = time.time()
+old_l = len(buck)
+buck = cat.filter_nth_percentile_bucket(buck, 40)
+print("Percentiled out {} elements".format(old_l - len(buck)))
 
 #if present, gets rid of white
 if (0, 0) in buck:
@@ -59,7 +62,7 @@ for c in lmx:
 
     space = (*c, 255)
     if not len(points) > LIMIT:
-        #cv2.putText(se, "REJECTED", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(rgb_map, "x", (c[0]-4, c[1]+4), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 1, cv2.LINE_AA)
         print("Rejected {} due to only {} pixel in its space".format(space, len(points)))
     else:
         cv2.imshow("Map: {}".format(space), m)
