@@ -12,7 +12,8 @@ def ma_dist_init(mtx=None):
     if mtx is None:
         return eu_dist
     else:
-        return lambda a, b: (np.dot(np.dot(np.array([int(aa)-int(bb) for aa, bb in zip(a, b)]), np.linalg.inv(mtx)), np.array([[int(aa)-int(bb)] for aa, bb in zip(a, b)])))[0]**.5
+        inv = np.linalg.inv(mtx)
+        return lambda a, b: (np.dot(np.dot(np.array([int(aa)-int(bb) for aa, bb in zip(a, b)]), inv), np.array([[int(aa)-int(bb)] for aa, bb in zip(a, b)])))[0]**.5
 
 #data must be sorted such as [x][y] = num with num sorted
 def local(input, keys, epsilon=EPSILON, verbose=False, distance=eu_dist):
