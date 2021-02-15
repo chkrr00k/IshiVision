@@ -69,11 +69,11 @@ def local(input, keys, epsilon=EPSILON, verbose=False, distance=eu_dist):
         groups[l].append(l)
     return lmax, groups
 
-
-print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (10, 0)))
-print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (0, 10)))
-print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (10, 10)))
-print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (-10, 0)))
+#TODO remove all below here####################################################
+#print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (10, 0)))
+#print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (0, 10)))
+#print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (10, 10)))
+#print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (-10, 0)))
 
 def compressed_2d_range(input):
     x = [x for x, _ in input]
@@ -111,6 +111,6 @@ def rect_subtract(base, sub):
             (sub[2], base[1], base[2], sub[1]), 
             (sub[0], base[1], sub[2], sub[1])]))
     
-print(rect_intersect((0, 1, 60, 107), (150, 1, 150, 1)))
-print(rect_subtract((0, 1, 6, 7), rect_intersect((1, 2, 3, 4), (0, 1, 6, 7))))
-print(rect_subtract((0, 1, 60, 107), rect_intersect((0, 1, 60, 107), (6, 57, 31, 163))))
+#print(rect_intersect((0, 1, 60, 107), (150, 1, 150, 1)))
+#print(rect_subtract((0, 1, 6, 7), rect_intersect((1, 2, 3, 4), (0, 1, 6, 7))))
+#print(rect_subtract((0, 1, 60, 107), rect_intersect((0, 1, 60, 107), (6, 57, 31, 163))))
