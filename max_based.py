@@ -8,7 +8,7 @@ import visual
 
 import time #for performace testing
 
-img = cv2.imread("plate5.jpg")
+img = cv2.imread("plate3.jpg")
 
 img = cv2.bilateralFilter(img, 9, 150, 75)
 
