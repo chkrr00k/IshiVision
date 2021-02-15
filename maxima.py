@@ -20,51 +20,49 @@ def local(input, keys, epsilon=EPSILON, verbose=False, distance=eu_dist):
     the keys are the sorted keys of the dict"""
 
     lmax, groups = list(), dict()
-    
-    for k in keys:
+
+    lmax.append(keys[0])
+    groups[keys[0]]=list()
+    if verbose:
+        print("\tAppended first iteration")
+    for k in keys[1:]:
         if verbose:
             print("Currently sorting {}".format(k))
-        if len(lmax) == 0:
-            lmax.append(k)
-            groups[k]=list()
+        compressed = False
+        candidate = None
+        candidate_dist = None
+        compressor = None
+        compressor_dist = None
+        for l in lmax:
             if verbose:
-                print("\tAppended first iteration")
-        else:
-            compressed = False
-            candidate = None
-            candidate_dist = None
-            compressor = None
-            compressor_dist = None
-            for l in lmax:
+                print("\tAnalyzing {}".format(l))
+            d = distance(l, k)
+            if d < epsilon:
                 if verbose:
-                    print("\tAnalyzing {}".format(l))
-                d = distance(l, k)
-                if d < epsilon:
-                    if verbose:
-                        print("\t\tCompressed {} as {} [as distance: {}]".format(k, l, d))
-                    compressed = True
-                    if compressor is None:
-                        compressor = l
-                        compressor_dist = d
-                    elif d < compressor_dist:
-                        compressor = l
-                        compressor_dist = d
-                else:
-                    if candidate is not None and candidate_dist < d:
-                        candidate = l
-                        candidate_dist = d
-                    else:
-                        candidate = l
-                        candidate_dist = d
-            if not compressed:
-                if verbose:
-                     print("\t\t\tAppended {} due to {} [as distance: {}]".format(k, candidate, candidate_dist))
-                lmax.append(k)
-                groups[k] = list()
+                    print("\t\tCompressed {} as {} [as distance: {}]".format(k, l, d))
+                compressed = True
+                if compressor is None:
+                    compressor = l
+                    compressor_dist = d
+                elif d < compressor_dist:
+                    compressor = l
+                    compressor_dist = d
             else:
-                if verbose:
-                    print("\t\t\tGrouped {} in {}".format(k, compressor))
-                groups[compressor].append(k)
+                if candidate is not None and candidate_dist < d:
+                    candidate = l
+                    candidate_dist = d
+                else:
+                    candidate = l
+                    candidate_dist = d
+        if not compressed:
+            if verbose:
+                print("\t\t\tAppended {} due to {} [as distance: {}]".format(k, candidate, candidate_dist))
+            lmax.append(k)
+            groups[k] = list()
+        else:
+            if verbose:
+                print("\t\t\tGrouped {} in {}".format(k, compressor))
+            groups[compressor].append(k)
     for l in lmax:
         groups[l].append(l)
     return lmax, groups
