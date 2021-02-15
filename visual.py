@@ -20,7 +20,7 @@ def create_map(points):
 
 def mask_from_group(group, buckets, shape):
     """Creates the mask from group, the buckets and the actual image shape"""
-    m = np.zeros(shape)
+    m = np.zeros(shape, np.uint8)
     points = [i for p in group for i in buckets[p]]
     for p in points:
         m[p[0], p[1]] = 255
