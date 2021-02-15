@@ -50,8 +50,6 @@ t3 = time.time()
 
 rgb_map = visual.create_maxima_map(buck, lmx)
 
-avg_dst = 50
-
 LIMIT = (img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4)
 print("Defined {} as minimum pixel limit".format(LIMIT))
 
