@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-def get_buckets(input):
+def get_buckets_naive(input):
     """Divide the given input array into indices buckets of the same value"""
     result = dict()
     for x in range(len(input)):
@@ -11,6 +11,20 @@ def get_buckets(input):
                 result[px].append((x, y))
             else:
                 result[px] = [(x, y)]
+    return result
+
+def get_buckets(input):
+    result = dict()
+    tmp = None
+    for c, v in np.ndenumerate(input):
+        if c[2] == 0:
+            tmp = v
+        else:
+            tmp = (tmp, v)
+            if tmp in result:
+                result[tmp].append((c[0], c[1]))
+            else:
+                result[tmp] = [(c[0], c[1])]
     return result
 
 def sort_buckets(input, key=None, reverse=True):
@@ -27,5 +41,4 @@ def filter_nth_percentile_bucket(input, percentile):
     return dict(filter(lambda e: len(e[1]) >= prcnt, input.items()))
 
 def reduce_2_chan(input):
-#    print(input[:,:,-1])
     return input[:,:,:-1]

@@ -7,13 +7,14 @@ DEF_MALA_MATRIX = np.array([[1/6, 0],[0, 1]])
 def eu_dist(a, b):
     """Euclidean distance"""
     return sum([(int(aa)-int(bb))**2 for aa, bb in zip(a, b)])**.5
-def ma_dist_init(mtx=None):
+def ma_dist_init(mtx=None, self=True):
     """Mahalanobis distance"""
     if mtx is None:
         return eu_dist
     else:
         inv = np.linalg.inv(mtx)
         return lambda a, b: (np.dot(np.dot(np.array([int(aa)-int(bb) for aa, bb in zip(a, b)]), inv), np.array([[int(aa)-int(bb)] for aa, bb in zip(a, b)])))[0]**.5
+
 
 #data must be sorted such as [x][y] = num with num sorted
 def local(input, keys, epsilon=EPSILON, verbose=False, distance=eu_dist):
@@ -51,18 +52,18 @@ def local(input, keys, epsilon=EPSILON, verbose=False, distance=eu_dist):
 #            if verbose:
 #                print("\t\t\tAppended {} due to {} [as distance: {}]".format(k, candidate, candidate_dist))
             lmax.append(k)
-            groups[k] = list()
+            groups[k] = [k]
         else:
  #           if verbose:
  #               print("\t\t\tGrouped {} in {}".format(k, compressor))
             groups[compressor].append(k)
-    for l in lmax:
-        groups[l].append(l)
+ #   for l in lmax:
+ #       groups[l].append(l)
     return lmax, groups
 
 #TODO remove all below here####################################################
+#print(ma_dist_init(DEF_MALA_MATRIX, True)((0, 0), (10, 0)))
 #print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (10, 0)))
-#print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (0, 10)))
 #print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (10, 10)))
 #print(ma_dist_init(DEF_MALA_MATRIX)((0, 0), (-10, 0)))
 

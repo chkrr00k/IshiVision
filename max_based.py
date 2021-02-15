@@ -13,8 +13,7 @@ img = cv2.imread("plate3.jpg")
 img = cv2.bilateralFilter(img, 9, 150, 75)
 
 print("Started tracking perfomance")
-t0 = time.time()
-
+t00 = time.time()
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 img_hsv[:,:,2] = 255
 
@@ -24,6 +23,7 @@ print("Tracking {} pixels: {}".format(img_hsv.shape[0]*img_hsv.shape[1], img_hsv
 
 img_red = cat.reduce_2_chan(img_hsv)
 
+t0 = time.time()
 buck = cat.get_buckets(img_red)
 
 print("Found {} buckets".format(len(buck)))
@@ -50,7 +50,7 @@ t3 = time.time()
 
 rgb_map = visual.create_maxima_map(buck, lmx)
 
-LIMIT = (img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4)
+LIMIT = int((img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4))
 print("Defined {} as minimum pixel limit".format(LIMIT))
 
 for c in lmx:
@@ -70,7 +70,7 @@ print("""Performance report:
 {:.3f}s to categorize in buckets
 {:.3f}s to find local maxima
 {:.3f}s total
-""".format(t1-t0, t3-t2, t4-t0))
+""".format(t1-t0, t3-t2, t4-t00))
 
 cv2.imshow("Local Maxima", rgb_map)
 cv2.waitKey(0)
