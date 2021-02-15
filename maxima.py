@@ -41,17 +41,11 @@ def local(input, keys, epsilon=EPSILON, verbose=False, distance=eu_dist):
                 if verbose:
                     print("\t\tCompressed {} as {} [as distance: {}]".format(k, l, d))
                 compressed = True
-                if compressor is None:
-                    compressor = l
-                    compressor_dist = d
-                elif d < compressor_dist:
+                if compressor is None or d < compressor_dist:
                     compressor = l
                     compressor_dist = d
             else:
                 if candidate is not None and candidate_dist < d:
-                    candidate = l
-                    candidate_dist = d
-                else:
                     candidate = l
                     candidate_dist = d
         if not compressed:

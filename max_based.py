@@ -8,9 +8,9 @@ import visual
 
 import time #for performace testing
 
-img = cv2.imread("plate5.jpg")
+img = cv2.imread("plate2.jpg")
 
-img = cv2.bilateralFilter(img, 9, 300, 75)
+img = cv2.bilateralFilter(img, 9, 150, 75)
 
 print("Started tracking perfomance")
 t0 = time.time()
