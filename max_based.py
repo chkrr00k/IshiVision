@@ -8,7 +8,7 @@ import visual
 
 import time #for performace testing
 
-img = cv2.imread("plate2.jpg")
+img = cv2.imread("../ref/base.png")
 
 img = cv2.bilateralFilter(img, 9, 150, 75)
 
@@ -50,7 +50,7 @@ t3 = time.time()
 
 rgb_map = visual.create_maxima_map(buck, lmx)
 
-LIMIT = int((img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4))
+LIMIT = 0#int((img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4))
 print("Defined {} as minimum pixel limit".format(LIMIT))
 
 for c in lmx:
