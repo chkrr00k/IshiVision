@@ -11,7 +11,7 @@ import maxima
 #close = False
 
 #img = cv2.imread("plate4.jpg") #16 7
-img = cv2.imread("../ref/Plate3.jpg") #16 7 3 12 4 5 6 2 10
+img = cv2.imread("ref/Plate3.jpg") #16 7 3 12 4 5 6 2 10
 #wight are approximated                        ^^
 img = cv2.bilateralFilter(img, 9, 125, 50)
 print("Image of shape {}".format(img.shape))
