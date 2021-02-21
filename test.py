@@ -11,7 +11,7 @@ import maxima
 #close = False
 
 #img = cv2.imread("plate4.jpg") #16 7
-img = cv2.imread("../ref/Plate16.jpg") #16 7 3 12 4 5 6 2 10
+img = cv2.imread("../ref/Plate3.jpg") #16 7 3 12 4 5 6 2 10
 #wight are approximated                        ^^
 img = cv2.bilateralFilter(img, 9, 125, 50)
 print("Image of shape {}".format(img.shape))
@@ -26,8 +26,8 @@ print("Masks calculated in: {:.3f}s".format(t1-t0))
 #print("Dilatation factor @ {}".format(dil_factor))
 
 for n, m in ms.items():
-#    cv2.imshow("Masks dil for {}".format(n), m)
     r, c = m.shape
+    #
     mc = utils.straight(m)
     bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)
     mc = mc[bndu[0]:bndl[0], bndu[1]:bndl[1]]
@@ -40,12 +40,13 @@ for n, m in ms.items():
     for co, [_, _, _, Pa] in zip(con, hi[0]):
         re = [x, y, w, h] = cv2.boundingRect(co)
         if Pa < 0:
-            cv2.rectangle(mc, (x, y), (x+w, y+h), (0, 0, 255), 1)
+#            cv2.rectangle(mc, (x, y), (x+w, y+h), (0, 0, 255), 1)
             rects.append(re)
     for [x, y, xx, yy] in utils.reduce_sections(rects):
         cv2.rectangle(mc, (x, y), (xx, yy), (255, 0, 0), 1)
 
     cv2.rectangle(mc, (mc.shape[0]//4, 0), (mc.shape[0]*3//4, mc.shape[1]), (0, 255, 0), 1)
+    cv2.line(mc, ((mc.shape[0]//2),0), (mc.shape[0]//2, mc.shape[1]), (0, 255, 0), 1)
     cv2.imshow("c:{}".format(n), mc)
 
 
