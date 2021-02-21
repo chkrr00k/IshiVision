@@ -7,4 +7,9 @@ def straight(img):
     shift = math.tan(.15)*r/2
     src, dst = np.float32([[0, 0],[c, 0],[0, r]]), np.float32([[-shift,0],[c-shift, 0],[shift, r]])
     M = cv2.getAffineTransform(src, dst)
-    return cv2.warpAffine(img, M, (r, c))
+    return cv2.warpAffine(img, M, (r, c), flags=cv2.INTER_LINEAR)
+
+def rot(img, ang):
+    ic = tuple(np.array(img.shape[1::-1])/2)
+    rm = cv2.getRotationMatrix2D(ic, ang, 1.0)
+    return cv2.warpAffine(img, rm, img.shape[1::-1], flags=cv2.INTER_LINEAR)

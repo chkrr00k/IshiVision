@@ -6,8 +6,8 @@ import math
 import extract
 from utils import straight
 
-dilate = False
-close = False
+#dilate = False
+#close = False
 
 #img = cv2.imread("plate4.jpg") #16 7
 img = cv2.imread("../ref/Plate12.jpg") #16 7 3 12 4 5 6
@@ -22,13 +22,6 @@ print("Masks calculated in: {:.3f}s".format(t1-t0))
 
 #dil_factor = int(math.floor(math.log10(abs(img.shape[0])))) + 5
 #print("Dilatation factor @ {}".format(dil_factor))
-
-#def rot(img, ang):
-#    ic = tuple(np.array(img.shape[1::-1])/2)
-#    rm = cv2.getRotationMatrix2D(ic, ang, 1.0)
-#    return cv2.warpAffine(img, rm, img.shape[1::-1], flags=cv2.INTER_LINEAR)
-
-
 
 #result = list()
 for n, m in ms.items():
