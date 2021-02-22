@@ -50,9 +50,56 @@ def extractRois(img, p):
     msk = np.zeros(img.shape[:2], dtype=np.uint8)
     [diax, diay, diaxx, diayy, s] = p[0]
     cv2.line(msk, (diax, diay), (diaxx, diayy), (255,255,0), s)
-    d = cv2.bitwise_and(img, img, mask=msk)[diay:diayy, diaxx:diax]
-    result.append(d)
+    d = cv2.bitwise_and(img, img, mask=msk)[diay:diayy, int(diaxx-(2**.5*s)//2):int(diax+(2**.5*s)//2)]
+    
+    m = ((diayy-diay)/(diaxx-diax))
+    effx = int(diax-diaxx+(2**.5*s))
+    msk = np.zeros((diayy-diay, int(2**.5*s)+1), dtype=np.uint8)
 
+    for i, r in enumerate(d[0:diayy-diay]):
+        area = r[int(effx-(2**.5*s)+i/m):int(effx+i/m)]
+        msk[i, :len(area)] = area[:msk.shape[1]]
+    result.append(msk)
+
+    return result
+
+def print_estimation(a,b,c,d,eu,el,fu,fl,g,dia):
+    print("""
+            +-------------------------+
+            |           {:3d}%          |
+            +-------------------------+
+         +-----+                   +-----+
+         |{:3d}% |                   |     |
+         +-----+                   |{:3d}% |            /      /
+         |{:3d}% |                   |     |           /      /
+         +-----+                   +-----+          /      /
+            +-------------------------+            / {:3d}% /
+            |           {:3d}%          |           /      /
+            +-------------------------+          /      /
+         +-----+                   +-----+      /      /
+         |{:3d}% |                   |     |
+         +-----+                   |{:3d}% |
+         |{:3d}% |                   |     |
+         +-----+                   +-----+
+            +-------------------------+
+            |           {:3d}%          |
+            +-------------------------+
+
+
+            """.format(a,fu,b,fl,dia,g,eu,c,el,d))
+
+def analyze(img, grid):
+    result = list()
+    e,f=4,5
+    for i, im in enumerate(extractRois(img, grid)):
+        im[im <= 127] = 0
+        im[im > 127] = 1
+        if i in (e,f):
+            b, w = np.bincount(im.flatten()[:len(im.flatten())//2])
+            result.append(int(w/(b+w)*100))
+            im = im.ravel()[len(im.flatten())//2:]
+        b, w = np.bincount(im.flatten())
+        result.append(int(w/(b+w)*100))
     return result
 
 
@@ -66,9 +113,8 @@ re_ = drawSSD(re_, p1)
 cv2.imshow("A", re_)
 
 re = cv2.cvtColor(re, cv2.COLOR_BGR2GRAY)
-for i, im in enumerate(extractRois(re, p1)):
-    cv2.imshow("{}".format(i), im)
 
+print_estimation(*analyze(re, p))
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
