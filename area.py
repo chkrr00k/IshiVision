@@ -18,7 +18,7 @@ def points(origin, size, scale):
     d = (origin[0], origin[1]+size[1]-scale, origin[0]+size[0], origin[1]+size[1])
     e = (origin[0], origin[1]+size[1]//2, origin[0]+scale, origin[1]+size[1])
     f = (origin[0], origin[1], origin[0]+scale, origin[1]+size[1]//2)
-    g = (origin[0], origin[1]+size[1]//2-scale//2, origin[0]+size[0], origin[1]+size[1]//2+scale//2)
+    g = (origin[0]+scale, origin[1]+size[1]//2-scale//2, origin[0]+size[0]-scale, origin[1]+size[1]//2+scale//2)
     dia = (origin[0]+size[0]-scale//2, origin[1]+scale//2, origin[0]+scale//2, origin[1]+size[1]-scale//2, scale)
     
     return dia, a, b, c, d, e, f, g
@@ -57,8 +57,8 @@ def extractRois(img, p):
 
 
 re = cv2.imread("ref/ssd.jpg")
-p = points((20, 32), (84, 130), 25)
-p1 = points((111, 35), (80, 140), 25)
+p = points((20, 32), (84, 130), 20)
+p1 = points((111, 35), (80, 140), 20)
 
 re_ = drawSSD(re, p)
 re_ = drawSSD(re_, p1)
