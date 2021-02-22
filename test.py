@@ -27,7 +27,6 @@ for n, m in ms.items():
     #selects the intresting part (the center)
     bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)
     mc = mc[bndu[0]:bndl[0], bndu[1]:bndl[1]]
-
     #finds the contourns
     _, con, hi = cv2.findContours(mc, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
