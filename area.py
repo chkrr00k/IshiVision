@@ -63,15 +63,15 @@ def extractRois(img, p):
 
     return result
 
-def print_estimation(a,b,c,d,eu,el,fu,fl,g,dia):
+def print_estimation(a,bu,bl,c,d,eu,el,fu,fl,g,dia):
     print("""
             +-------------------------+
             |           {:3d}%          |
             +-------------------------+
          +-----+                   +-----+
-         |{:3d}% |                   |     |
-         +-----+                   |{:3d}% |            /      /
-         |{:3d}% |                   |     |           /      /
+         |{:3d}% |                   |{:3d}% |
+         +-----+                   +-----+            /      /
+         |{:3d}% |                   |{:3d}% |           /      /
          +-----+                   +-----+          /      /
             +-------------------------+            / {:3d}% /
             |           {:3d}%          |           /      /
@@ -86,35 +86,64 @@ def print_estimation(a,b,c,d,eu,el,fu,fl,g,dia):
             +-------------------------+
 
 
-            """.format(a,fu,b,fl,dia,g,eu,c,el,d))
+            """.format(a,fu,bu,fl,bl,dia,g,eu,c,el,d))
 
 def analyze(img, grid):
+    img = img.copy()
     result = list()
-    e,f=4,5
+    a,e,f=1,4,5
     for i, im in enumerate(extractRois(img, grid)):
         im[im <= 127] = 0
         im[im > 127] = 1
-        if i in (e,f):
+        im[0,0] = 0 #this is an horrible hack
+        im[0,1] = 1
+        if i in (a,e,f):
             b, w = np.bincount(im.flatten()[:len(im.flatten())//2])
             result.append(int(w/(b+w)*100))
-            im = im.ravel()[len(im.flatten())//2:]
+            im = im.ravel()[len(im.flatten())//2:] 
+            im[0] = 0 #this is an horrible hack
+            im[1] = 1
         b, w = np.bincount(im.flatten())
         result.append(int(w/(b+w)*100))
     return result
 
+def grid(img):
+    bimg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-re = cv2.imread("ref/ssd.jpg")
-p = points((20, 32), (84, 130), 20)
-p1 = points((111, 35), (80, 140), 20)
+    _, bimg = cv2.threshold(bimg, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-re_ = drawSSD(re, p)
-re_ = drawSSD(re_, p1)
+    _, con, hi = cv2.findContours(bimg, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(img, con, -1, (0, 255, 0))
+    print(con)
+    
 
-cv2.imshow("A", re_)
+    return img
 
-re = cv2.cvtColor(re, cv2.COLOR_BGR2GRAY)
 
-print_estimation(*analyze(re, p))
+#re = cv2.imread("ref/ssd0.jpg")
+#p = points((20, 32), (84, 130), 20)
+#p1 = points((111, 35), (80, 140), 20)
+
+#re = cv2.imread("ref/ssd1.jpg")
+#p = points((80, 53), (119, 166), 20)
+
+re = cv2.imread("ref/ssd2.jpg")
+p = points((95, 50), (105, 170), 20)
+
+#re = cv2.imread("ref/ssd3.jpg")
+#p = points((142, 74), (85, 130), 20)
+
+#re_ = drawSSD(re, p)
+#re_ = drawSSD(re_, p1)
+
+#cv2.imshow("A", re_)
+
+
+#re = cv2.cvtColor(re, cv2.COLOR_BGR2GRAY)
+#print_estimation(*analyze(re, p))
+
+cv2.imshow("R", grid(re))
+
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

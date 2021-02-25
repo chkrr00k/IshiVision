@@ -7,7 +7,7 @@ import extract
 import utils
 import maxima
 
-img = cv2.imread("ref/Plate3.jpg") #16 7 3 12 4 5 6 2 10
+img = cv2.imread("ref/Plate12.jpg") #16 7 3 12 4 5 6 2 10
 
 #weight are approximated                        ^^
 img = cv2.bilateralFilter(img, 9, 125, 50)
@@ -23,7 +23,6 @@ for n, m in ms.items():
     r, c = m.shape #this is tecnically useless as they were defined above but are kept to be sure
     #straigten the chars (ocr step 1)
     mc = utils.straight(m)
-
     #selects the intresting part (the center)
     bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)
     mc = mc[bndu[0]:bndl[0], bndu[1]:bndl[1]]
