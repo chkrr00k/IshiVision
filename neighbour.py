@@ -22,7 +22,7 @@ def clean(input):
 
 
 
-i = cv2.imread("ref/ssd3.jpg")
+i = cv2.imread("ref/ssd4.jpg")
 i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
 _, i = cv2.threshold(i, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
