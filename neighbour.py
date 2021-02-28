@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
 
+#import gi
+#gi.require_version("Gtk", "2.0")
+import common
+
 def _get_neighbourhood(base, coords, radius=1):
     x, y = coords
     ux, lx = x-radius if x-radius > 0 else 0, x+radius+1 if x+radius+1 < base.shape[0]-1 else base.shape[0]-1
@@ -19,7 +23,9 @@ def clean(input):
     return result
 
 
-
+def imshow(img):
+    plt.imshow(img)
+    plt.show()
 
 
 i = cv2.imread("ref/ssd4.jpg")
