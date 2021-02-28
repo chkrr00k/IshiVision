@@ -17,3 +17,7 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+#pycache
+__pycache__/
+*.py[cod]
