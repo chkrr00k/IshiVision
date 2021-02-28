@@ -25,15 +25,15 @@ def imshow(img):
     plt.imshow(img)
     plt.show()
 
+if __name__ == "__main__":
+    i = cv2.imread("ref/ssd4.jpg")
+    i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
+    _, i = cv2.threshold(i, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-i = cv2.imread("ref/ssd4.jpg")
-i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
-_, i = cv2.threshold(i, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    k = clean(i)
+    cv2.imshow("K", k)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-k = clean(i)
-cv2.imshow("K", k)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-#_get_neighbourhood(k, (280,275))
+    #_get_neighbourhood(k, (280,275))
 
