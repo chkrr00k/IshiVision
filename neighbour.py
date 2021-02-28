@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 
-#import gi
-#gi.require_version("Gtk", "2.0")
 import common
 
 def _get_neighbourhood(base, coords, radius=1):
