@@ -6,17 +6,18 @@ from collections import namedtuple
 
 import matplotlib.pyplot as plt
 
-def render_glyph(glyph, heigh, bezel=20, thic=26):
+def render_glyph(glyph, heigh, bezel=20, thic=26, blur=True):
     scale = cv2.getFontScaleFromHeight(cv2.FONT_HERSHEY_SIMPLEX, heigh)
     size, bl = cv2.getTextSize(glyph, cv2.FONT_HERSHEY_SIMPLEX, scale, thic)
     size = (size[0]+thic+bezel*2, size[1]+bezel*2)
     result = np.zeros(size, dtype=np.uint8)
     center = (0+thic//2+bezel, size[1]-bezel)
-    cv2.putText(result, glyph, center, cv2.FONT_HERSHEY_DUPLEX, scale, (255,255,255), thic)
-    
+    cv2.putText(result, glyph, center, cv2.FONT_HERSHEY_SCRIPT_COMPLEX, scale, (255,255,255), thic)
+    if blur:
+        result = cv2.medianBlur(result, 15)
     return result
 
-def get_all_glyphs_refs(chars, heigh=200, bezel=20, thic=24):
+def get_all_glyphs_refs(chars, heigh=200, bezel=20, thic=20):
     result = dict()
     for g in chars:
         result[g] = render_glyph(g, heigh, bezel, thic)
@@ -32,6 +33,21 @@ def get_infos(inputs):
         result.append(ImageInfo(l, kp, des))
     return result
 
+def approximate(img, e=.006):
+    _, cnt, hi = cv2.findContours(img, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    #cnt = cnt[0]
+    aprx = list()
+    for c in cnt:
+        #print("{} {}".format(len(c), h))
+        epsilon = e * cv2.arcLength(c, True)
+        aprx.append(cv2.approxPolyDP(c, epsilon, True))
+
+    sho = np.zeros_like(img, np.uint8) #cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+#    cv2.drawContours(sho, cnt, -1, (0,0,255), 2)
+#    cv2.drawContours(sho, aprx, -1, (0,255,0), 3)
+    cv2.fillPoly(sho, pts=aprx, color=(255,0,0))
+#    cv2.imshow("A", sho)
+    return sho
 
 
 c = get_all_glyphs_refs("1234567890")
@@ -39,7 +55,7 @@ print("Calculated {} tables".format(len(c)))
 
 infos = get_infos(c)
 
-sub = cv2.imread("ref/ssd3.jpg")
+sub = cv2.imread("ref/ssd2.jpg")
 sub = cv2.cvtColor(sub, cv2.COLOR_BGR2GRAY)
 _, sub = cv2.threshold(sub, 0, 255, cv2.THRESH_OTSU+cv2.THRESH_BINARY)
 #sub = cv2.morphologyEx(sub, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15,15)))
@@ -47,10 +63,13 @@ _, sub = cv2.threshold(sub, 0, 255, cv2.THRESH_OTSU+cv2.THRESH_BINARY)
 from neighbour import clean
 
 sub = clean(sub)
-sub = sub[:,:127]
+#sub = sub[:,100:]
+
+sub = cv2.medianBlur(sub, 15)
 
 sift = cv2.SIFT_create()
 kp, des = sift.detectAndCompute(sub, None)
+cv2.imshow("k", cv2.drawKeypoints(sub.copy(), kp, sub.copy()))
 
 max_v, max_img, max_i = 0, None, "nothing"
 FIKT = 1
@@ -64,7 +83,7 @@ for (l, m), i in zip(c.items(), infos):
     #cv2.imshow("Base {}".format(l), cv2.drawKeypoints(m, i.kp, m))
     #bf = cv2.BFMatcher()
     
-    matches = [m for m, n in flann.knnMatch(des, i.des, k=2) if m.distance < .7 * n.distance]
+    matches = [m for m, n in flann.knnMatch(des, i.des, k=2) if m.distance < .8 * n.distance]
     if len(matches) > MMC:
         src = np.float32([kp[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
         dst = np.float32([i.kp[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
