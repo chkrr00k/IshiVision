@@ -6,14 +6,10 @@
 
 import cv2
 import numpy as np
-import time
 import math
 
-import extract
 import utils
-import maxima
 
-import contours
 import neighbour
 # from matplotlib import pyplot as plt
 
@@ -138,6 +134,11 @@ def select_image(ms):
 
 
 if __name__ == "__main__":
+    import time
+    
+    #import maxima
+    import extract
+    import contours
     
     img = cv2.imread("ref/Plate16.jpg") #16 7 3 12 4 5 6 2 10
 
