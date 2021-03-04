@@ -9,7 +9,8 @@ import extract
 import utils
 import maxima
 
-img = cv2.imread("ref/gen/4.jpg") #16 7 3 12 4 5 6 2 10
+img = cv2.imread("ref/gen/1.jpg") #16 7 3 12 4 5 6 2 10
+#img = cv2.imread("1.jpg") #16 7 3 12 4 5 6 2 10
 
 #weight are approximated                        ^^
 img = cv2.bilateralFilter(img, 9, 125, 50)
