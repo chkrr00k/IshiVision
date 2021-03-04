@@ -70,7 +70,7 @@ def get_all_tables(glyphs, heigh=200, bezel=40, thic=20, bg=(255,255,255), n_cir
 
 
 if __name__ == "__main__":
-    for k, v in get_all_tables("1234567890"), c_off=[_color(0xBAB8AF)], c_on=[_color(0x4B4B4B)].items():
+    for k, v in get_all_tables("1234567890", c_off=[_color(0xBAB8AF)], c_on=[_color(0x4B4B4B), _color(0x747474)]).items():
         cv2.imshow(k, v)
 
     cv2.waitKey(0)

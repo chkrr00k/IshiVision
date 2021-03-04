@@ -30,7 +30,7 @@ for n, m in ms.items():
     mc = mc[bndu[0]:bndl[0], bndu[1]:bndl[1]]
     #finds the contourns
     _, con, hi = cv2.findContours(mc, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    cv2.imwrite("ref/{}.jpg".format(n), mc)
+#    cv2.imwrite("ref/{}.jpg".format(n), mc)
 
     #rgb for visualization
     mc = cv2.cvtColor(mc, cv2.COLOR_GRAY2BGR)
