@@ -14,5 +14,5 @@ def showtime(func):
             return func(*args, **kwargs)
         finally:
             t1 = time()
-            print("{:.3f}s".format(t1-t0))
+            print("{}: {:.3f}s".format(func.__name__, t1-t0))
     return _time

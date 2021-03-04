@@ -5,14 +5,17 @@ import numpy as np
 import matcher
 
 def get_grid(step, size, fill=255):
+    """Returns the basic stepping dots"""
     result = np.zeros(size, np.uint8)
     result[0::step, 0::step] = fill # [start:stop:step]
     return result
 
 def dot_glyphs(step, chars):
+    """Returns the glyphs in dot mode"""
     return {k: cv2.bitwise_and(v, v, mask=get_grid(step, v.shape)) for k, v in matcher.get_all_glyphs_refs(chars).items()}
 
 def dot_clean(input, step, fill=255):
+    """Uses the clean algorithm to remove useless dots"""
     def _neigh(b, c, r, s):
         x, y = c
         h = [x+(i*s) for i in range(-r, r+1) if 0 < x+(i*s) < b.shape[0]-1]

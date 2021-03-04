@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 from collections import namedtuple
 
-import matplotlib.pyplot as plt
 
 def render_glyph(glyph, heigh, bezel=20, thic=26, blur=True):
+    """Returns a picture of a given glyph with a given size"""
     scale = cv2.getFontScaleFromHeight(cv2.FONT_HERSHEY_SIMPLEX, heigh)
     size, bl = cv2.getTextSize(glyph, cv2.FONT_HERSHEY_SIMPLEX, scale, thic)
     size = (size[0]+thic+bezel*2, size[1]+bezel*2)
@@ -18,12 +18,14 @@ def render_glyph(glyph, heigh, bezel=20, thic=26, blur=True):
     return result
 
 def get_all_glyphs_refs(chars, heigh=200, bezel=20, thic=20):
+    """Generates all glyphs picture from a string and given parameters"""
     result = dict()
     for g in chars:
         result[g] = render_glyph(g, heigh, bezel, thic)
     return result
 
 def get_infos(inputs):
+    """Returns an object with all kp and desc from SIFT"""
     result = list()
     ImageInfo = namedtuple("ImageInfo", "glyph kp des")
 
@@ -34,6 +36,7 @@ def get_infos(inputs):
     return result
 
 def approximate(img, e=.006):
+    """Approximates a contourn into smaller area"""
     _, cnt, hi = cv2.findContours(img, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
     #cnt = cnt[0]
     aprx = list()
@@ -55,17 +58,17 @@ if __name__ == "__main__":
 
     infos = get_infos(c)
 
-    sub = cv2.imread("ref/ssd2.jpg")
+    sub = cv2.imread("ref/gen/con/4.jpg")
     sub = cv2.cvtColor(sub, cv2.COLOR_BGR2GRAY)
     _, sub = cv2.threshold(sub, 0, 255, cv2.THRESH_OTSU+cv2.THRESH_BINARY)
-    #sub = cv2.morphologyEx(sub, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15,15)))
+    sub = cv2.morphologyEx(sub, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5)))
 
     from neighbour import clean
 
     sub = clean(sub)
     #sub = sub[:,100:]
 
-    sub = cv2.medianBlur(sub, 15)
+    sub = cv2.medianBlur(sub, 11)
 
     sift = cv2.SIFT_create()
     kp, des = sift.detectAndCompute(sub, None)

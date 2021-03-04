@@ -9,7 +9,7 @@ import extract
 import utils
 import maxima
 
-img = cv2.imread("ref/Plate16.jpg") #16 7 3 12 4 5 6 2 10
+img = cv2.imread("ref/gen/4.jpg") #16 7 3 12 4 5 6 2 10
 
 #weight are approximated                        ^^
 img = cv2.bilateralFilter(img, 9, 125, 50)
@@ -30,7 +30,7 @@ for n, m in ms.items():
     mc = mc[bndu[0]:bndl[0], bndu[1]:bndl[1]]
     #finds the contourns
     _, con, hi = cv2.findContours(mc, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-#    cv2.imwrite("{}.jpg".format(n), mc)
+    cv2.imwrite("ref/{}.jpg".format(n), mc)
 
     #rgb for visualization
     mc = cv2.cvtColor(mc, cv2.COLOR_GRAY2BGR)
