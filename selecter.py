@@ -19,9 +19,9 @@ def calculate_mean_contours_and_mean_area(ms):
 
     for n, m in ms.items():
         #straigten the chars (ocr step 1)
-        mc = utils.straight(m)
+#         mc = utils.straight(m)
 
-        mc = neighbour.clean(mc)
+        mc = neighbour.clean(m)
 
         #finds the contourns
         _, con, hi = cv2.findContours(mc, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -45,14 +45,16 @@ def select_image(ms):
     max = 0
     min = math.inf
     mean_contours, mean_area = calculate_mean_contours_and_mean_area(ms)
+    imask = None
+    i_n = None
     
     for n, m in ms.items():
         r, c = m.shape[:2]
         
         #straigten the chars (ocr step 1)
-        mc = utils.straight(m)
+#         mc = utils.straight(m)
 
-        mc = neighbour.clean(mc)
+        mc = neighbour.clean(m)
         
         #selects the intresting part (the center)
         bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)
@@ -118,6 +120,8 @@ def select_image(ms):
         # White pixels in the roi are more than the other white ones around
         # Black pixels around are more than the white pixels in the roi
         
+#         cv2.imshow('Mask {}'.format(n), mc)
+        
         if (white_pixels_roi >= (white_pixels - white_pixels_roi) and area > max and len(con) < min
                and (black_pixels - black_pixels_roi) > white_pixels_roi
             or white_pixels_roi >= (white_pixels - white_pixels_roi) and area > max and len(con) >= min
@@ -157,9 +161,9 @@ if __name__ == "__main__":
     for n, m in ms.items():
         r, c = m.shape #this is tecnically useless as they were defined above but are kept to be sure
         #straigten the chars (ocr step 1)
-        mc = utils.straight(m)
+#         mc = utils.straight(m)
 
-        mc = neighbour.clean(mc)
+        mc = neighbour.clean(m)
 
         #selects the intresting part (the center)
         bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[8]:
+# In[1]:
 
 
 import cv2
@@ -10,23 +10,35 @@ import selecter
 import matcher
 import extract
 import generator
+from matplotlib import pyplot as plt
 
-c = generator.get_all_tables("1234567890", c_off=[generator._color(0xBAB8AF)], c_on=[generator._color(0x4B4B4B), generator._color(0x747474)])
+c = generator.get_all_tables("1234567890", thic=10)
 
-# print(c)
+# print(type(c), c)
 
 # c = matcher.get_all_glyphs_refs("1234567890")
 print("Calculated {} tables".format(len(c)))
 
 infos = matcher.get_infos(c)
 
+# print(c)
 
 templates = list()
 
 for val, img in c.items():
-    ms = extract.get_masks(img)
+#     cv2.imshow('Image', img)
+#     plt.imshow(img)
+#     plt.show()
+    
+    ms = extract.get_masks(img, False)
+#     print(len(ms), ms)
     imask, _ = selecter.select_image(ms)
-    templates.append(imask)
+    
+    if imask is not None:
+        templates.append(imask)
+
+for i, template in enumerate(templates):
+    cv2.imshow('Template{}'.format(i), template)
 
 img = cv2.imread("ref/Plate5.jpg") #16 7 3 12 4 5 6 2 10
 
@@ -57,9 +69,9 @@ MMC = 4
 ip = dict(algorithm=FIKT, trees=5)
 sp = dict(checks=50)
 
-
+'''
 flann = cv2.FlannBasedMatcher(ip, sp)
-for (l, m), i in zip(templates.items(), infos):
+for m, i in zip(templates, infos):
     #cv2.imshow("Base {}".format(l), cv2.drawKeypoints(m, i.kp, m))
     #bf = cv2.BFMatcher()
 
@@ -90,7 +102,7 @@ for (l, m), i in zip(templates.items(), infos):
 
 #cv2.imshow("Res", sub)
 print("Found {} with ({}) matches".format(max_i, max_v))
-
+'''
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 

@@ -16,13 +16,18 @@ def get_masks(img, remove_white=True):
     img_red = cat.reduce_2_chan(img_hsv)
 
     buck = cat.get_buckets(img_red)
+    
 
     old_l = len(buck)
-    buck = cat.filter_nth_percentile_bucket(buck, 40)
     
     #if present, gets rid of white
     if remove_white and (0, 0) in buck:
         del buck[(0,0)]
+        
+    prop_buck = cat.filter_nth_percentile_bucket(buck, 40)
+    
+    if len(prop_buck) > 0:
+        buck = prop_buck
 
     popular = cat.sort_buckets(buck)
 
