@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     infos = get_infos(c)
 
-    sub = cv2.imread("ref/gen/con/4.jpg")
+    sub = cv2.imread("ref/gen/con/1.jpg")
     sub = cv2.cvtColor(sub, cv2.COLOR_BGR2GRAY)
     _, sub = cv2.threshold(sub, 0, 255, cv2.THRESH_OTSU+cv2.THRESH_BINARY)
     sub = cv2.morphologyEx(sub, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5)))
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         #cv2.imshow("Base {}".format(l), cv2.drawKeypoints(m, i.kp, m))
         #bf = cv2.BFMatcher()
         
-        matches = [m for m, n in flann.knnMatch(des, i.des, k=2) if m.distance < .8 * n.distance]
+        matches = [m for m, n in flann.knnMatch(des, i.des, k=2) if m.distance < .75 * n.distance]
         if len(matches) > MMC:
             src = np.float32([kp[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
             dst = np.float32([i.kp[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)

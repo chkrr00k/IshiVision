@@ -17,6 +17,11 @@ def rot(img, ang):
     rm = cv2.getRotationMatrix2D(ic, ang, 1.0)
     return cv2.warpAffine(img, rm, img.shape[1::-1], flags=cv2.INTER_LINEAR)
 
+def rect_center(r1, convert=False):
+    if convert:
+        r1 = rect_convert(r1)
+    return (r1[0]+(r1[2]-r1[0]//2), r1[1]+(r1[3]-r1[1])//2)
+
 def rect_intersect(r1, r2, convert=False):
     """tells if two rectangles intersects with eachothers. If convert is true conver the coords in (top left, bottom right) format"""
     if convert:
