@@ -21,7 +21,8 @@ def calculate_mean_contours_and_mean_area(ms):
         #straigten the chars (ocr step 1)
 #         mc = utils.straight(m)
 
-        mc = neighbour.clean(m)
+#         mc = neighbour.clean(m)
+        mc = m
 
         #finds the contourns
         _, con, hi = cv2.findContours(mc, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -54,7 +55,8 @@ def select_image(ms):
         #straigten the chars (ocr step 1)
 #         mc = utils.straight(m)
 
-        mc = neighbour.clean(m)
+#         mc = neighbour.clean(m)
+        mc = m
         
         #selects the intresting part (the center)
         bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)
@@ -104,7 +106,12 @@ def select_image(ms):
         
         # Calculate area
         area = 0
-
+        
+        if hi is None:
+            cv2.imshow('Mask', mc)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+        
         for c, [_, _, _, Pa] in zip(con, hi[0]):
             if Pa < 0:
                 area = area + cv2.contourArea(c)
