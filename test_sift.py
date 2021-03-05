@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import cv2
@@ -21,21 +21,29 @@ print("Calculated {} tables".format(len(c)))
 
 infos = matcher.get_infos(c)
 
-# print(c)
+for _, ci in c.items():
+    plt.imshow(cv2.cvtColor(ci, cv2.COLOR_BGR2RGB))
+    plt.show()
+
+
+# In[3]:
+
 
 templates = list()
 
 for val, img in c.items():
-#     cv2.imshow('Image', img)
-#     plt.imshow(img)
-#     plt.show()
+#     print(val)
+#     cv2.imshow('Image {}'.format(val), img)
     
     ms = extract.get_masks(img, False)
 #     print(len(ms), ms)
     imask, _ = selecter.select_image(ms)
     
+    
     if imask is not None:
         templates.append(imask)
+
+print('Found {} templates'.format(len(templates)))
 
 for i, template in enumerate(templates):
     cv2.imshow('Template{}'.format(i), template)
@@ -43,7 +51,7 @@ for i, template in enumerate(templates):
 img = cv2.imread("ref/Plate5.jpg") #16 7 3 12 4 5 6 2 10
 
 #weight are approximated                        ^^
-img = cv2.bilateralFilter(img, 9, 125, 50)
+# img = cv2.bilateralFilter(img, 9, 125, 50)
 ms = extract.get_masks(img)
 sub, i_n = selecter.select_image(ms)
 
@@ -54,10 +62,10 @@ sub, i_n = selecter.select_image(ms)
 
 from neighbour import clean
 
-sub = clean(sub)
+# sub = clean(sub)
 #sub = sub[:,100:]
 
-sub = cv2.medianBlur(sub, 11)
+# sub = cv2.medianBlur(sub, 11)
 
 sift = cv2.SIFT_create()
 kp, des = sift.detectAndCompute(sub, None)
@@ -69,9 +77,9 @@ MMC = 4
 ip = dict(algorithm=FIKT, trees=5)
 sp = dict(checks=50)
 
-'''
+
 flann = cv2.FlannBasedMatcher(ip, sp)
-for m, i in zip(templates, infos):
+for (l, m), i in zip(enumerate(templates), infos):
     #cv2.imshow("Base {}".format(l), cv2.drawKeypoints(m, i.kp, m))
     #bf = cv2.BFMatcher()
 
@@ -92,7 +100,7 @@ for m, i in zip(templates, infos):
             img3 = cv2.drawMatches(sub, kp, m, i.kp, matches, None, **dp)
             cv2.imshow("Homo {}".format(l), img3)
 
-    cv2.imshow(l, cv2.drawMatchesKnn(sub, kp, m, i.kp, [[m] for m in matches], None, flags=2))
+    cv2.imshow(str(l), cv2.drawMatchesKnn(sub, kp, m, i.kp, [[m] for m in matches], None, flags=2))
     print("matches('{}') := {}".format(l, len(matches)))
     if max_v < len(matches):
         max_v = len(matches)
@@ -100,9 +108,9 @@ for m, i in zip(templates, infos):
         max_i = l
 
 
-#cv2.imshow("Res", sub)
+cv2.imshow("Res", sub)
 print("Found {} with ({}) matches".format(max_i, max_v))
-'''
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
