@@ -18,9 +18,16 @@ def rot(img, ang):
     return cv2.warpAffine(img, rm, img.shape[1::-1], flags=cv2.INTER_LINEAR)
 
 def rect_center(r1, convert=False):
+    """Returns the center (as defined by centroid) of a rectangle"""
     if convert:
         r1 = rect_convert(r1)
-    return (r1[0]+(r1[2]-r1[0]//2), r1[1]+(r1[3]-r1[1])//2)
+    return (r1[0]+(r1[2]-r1[0])//2, r1[1]+(r1[3]-r1[1])//2)
+
+def point_in_rect(p, r1, convert=False):
+    """Returns if a point p is included in the rectangle r1, convert is to convert as define in conversion functions"""
+    if convert:
+        r1 = rect_convert(r1)
+    return r1[0] < p[0] < r1[2] and r1[1] < p[1] < r1[3]
 
 def rect_intersect(r1, r2, convert=False):
     """tells if two rectangles intersects with eachothers. If convert is true conver the coords in (top left, bottom right) format"""
@@ -78,11 +85,13 @@ def reduce_sections(rois, convert=True):
     return [reduce(rect_fuse, r) for r in result]
 
 def reduce_sections_area(cont, convert=True):
-    """Reduce the rectangles in an area in only one if the rectangles collide with eachothers. If convert is true it converts the rectangle in the rois in (top left, bottom right) format"""
-    from collections import namedtuple
+    """Reduce the contourns in an area in only one if the bounding rectangles collide with eachothers. If convert is true it converts the rectangle in the rois in (top left, bottom right) format
+    Returns a struct with bound and area field for the proper extraction of the results
+    """
 
     rois = [cv2.boundingRect(c) for c in cont]
-    rois = [rect_convert(r) for r in rois]
+    if convert:
+        rois = [rect_convert(r) for r in rois]
     
     def init(s, a, c):
         s.area = a

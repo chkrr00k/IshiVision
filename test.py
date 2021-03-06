@@ -53,11 +53,12 @@ for n, m in ms.items():
 
     #compress the rectangles that are superimposed to eachothers to have only the main ones
     r = utils.reduce_sections(rects)
-    rr = utils.reduce_sections_area(cont)
-    print("{} {}".format(len(r), len(rr)))
+    bounds = (mc.shape[0]//5, mc.shape[1]//8, mc.shape[0]*4//5, mc.shape[1]*7//8)
+#    rr = utils.reduce_sections_area(cont)
+#    print("{} {}".format(len(r), len(rr)))
     for [x, y, xx, yy] in r:
         cv2.rectangle(mc, (x, y), (xx, yy), (255, 0, 0), 1)
-    selector.score(m, con, r, prt=True, name=n)
+    selector.score(m, cont, bounds, prt=True, name=n)
     
     #actual intresting parts highlighted here
     cv2.rectangle(mc, (mc.shape[0]//5, mc.shape[1]//8), (mc.shape[0]*4//5, mc.shape[1]*7//8), (0, 255, 0), 1)
