@@ -7,6 +7,7 @@ from functools import wraps
 from time import time
 
 def showtime(func):
+    """Prints the time of execution of a function"""
     @wraps(func)
     def _time(*args, **kwargs):
         t0 = time()

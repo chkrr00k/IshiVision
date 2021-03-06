@@ -10,7 +10,7 @@ import utils
 import maxima
 import selector
 
-img = cv2.imread("ref/gen/2.jpg") #16 7 3 12 4 5 6 2 10
+img = cv2.imread("ref/gen/9.jpg") #16 7 3 12 4 5 6 2 10
 #img = cv2.imread("1.jpg") #16 7 3 12 4 5 6 2 10
 
 #weight are approximated                        ^^
@@ -31,9 +31,6 @@ for n, m in ms.items():
     mc = m
     if stra:
         mc = utils.straight(m)
-    #selects the intresting part (the center)
-#    bndu, bndl = (r//8, c//7), (r*7//8, c*6//7)
-#    mc = mc[bndu[0]:bndl[0], bndu[1]:bndl[1]]
     #finds the contourns
     _, con, hi = cv2.findContours(mc, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 #    cv2.imwrite("ref/{}.jpg".format(n), mc)
@@ -53,11 +50,11 @@ for n, m in ms.items():
 
     #compress the rectangles that are superimposed to eachothers to have only the main ones
     r = utils.reduce_sections(rects)
-    bounds = (mc.shape[0]//5, mc.shape[1]//8, mc.shape[0]*4//5, mc.shape[1]*7//8)
-#    rr = utils.reduce_sections_area(cont)
-#    print("{} {}".format(len(r), len(rr)))
     for [x, y, xx, yy] in r:
         cv2.rectangle(mc, (x, y), (xx, yy), (255, 0, 0), 1)
+
+
+    bounds = (mc.shape[0]//5, mc.shape[1]//8, mc.shape[0]*4//5, mc.shape[1]*7//8)
     selector.score(m, cont, bounds, prt=True, name=n)
     
     #actual intresting parts highlighted here
