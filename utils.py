@@ -77,7 +77,30 @@ def reduce_sections(rois, convert=True):
             result.append([c])
     return [reduce(rect_fuse, r) for r in result]
 
+def reduce_sections_area(cont, convert=True):
+    """Reduce the rectangles in an area in only one if the rectangles collide with eachothers. If convert is true it converts the rectangle in the rois in (top left, bottom right) format"""
+    from collections import namedtuple
 
+    rois = [cv2.boundingRect(c) for c in cont]
+    rois = [rect_convert(r) for r in rois]
+    
+    def init(s, a, c):
+        s.area = a
+        s._children = [c]
+    Section = type("Section", (), {"bound":None, "__init__": init})
+    
+    result = [Section(cv2.contourArea(cont[0]), rois[0])]
+    for c, b in zip(cont[1:], rois[1:]):
+        for r in result:
+            if any(rect_intersect(b, rr) for rr in r._children):
+                r._children.append(b)
+                r.area += cv2.contourArea(c)
+                break
+        else:
+            result.append(Section(cv2.contourArea(c), b))
+    for r in result:
+        r.bound = reduce(rect_fuse, r._children)
+    return result
 #print(reduce_sections([[0,0, 1,1], [1,1, 2,2], [4,4, 5,5], [0,0,2,4], [2,2,3,3]]))
 
 #a = [0,0, 1,1]

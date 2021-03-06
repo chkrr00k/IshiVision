@@ -43,15 +43,18 @@ for n, m in ms.items():
     
     #puts all the rectangles in a list
     rects = list()
-    
+    cont = list()
     #if Pa == -1 then it's a parent node, select only those as they are the main ones 
     for co, [_, _, _, Pa] in zip(con, hi[0]):
         re = [x, y, w, h] = cv2.boundingRect(co)
         if Pa < 0:
             rects.append(re)
+            cont.append(co)
 
     #compress the rectangles that are superimposed to eachothers to have only the main ones
     r = utils.reduce_sections(rects)
+    rr = utils.reduce_sections_area(cont)
+    print("{} {}".format(len(r), len(rr)))
     for [x, y, xx, yy] in r:
         cv2.rectangle(mc, (x, y), (xx, yy), (255, 0, 0), 1)
     selector.score(m, con, r, prt=True, name=n)
