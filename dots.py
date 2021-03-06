@@ -4,6 +4,10 @@ import numpy as np
 
 import matcher
 
+import warnings
+
+warnings.warn("The use of the dots module is not suggested by {} for any use".format("chkrr00k"), DeprecationWarning)
+
 def get_grid(step, size, fill=255):
     """Returns the basic stepping dots"""
     result = np.zeros(size, np.uint8)
@@ -29,11 +33,11 @@ def dot_clean(input, step, fill=255):
         n = len(list(filter(lambda e: e > 127, _neigh(input, c, 2, step))))
         if n > 6:
             result[c[0], c[1]] = 255
-            print("{} {} ({})".format(c, _neigh(input, c, 2, step), n))
+#            print("{} {} ({})".format(c, _neigh(input, c, 2, step), n))
     return result
 
 if __name__ == "__main__":
-    sub = cv2.imread("ref/ssd2.jpg")
+    sub = cv2.imread("ref/gen/con/1.jpg")
     sub = cv2.cvtColor(sub, cv2.COLOR_BGR2GRAY)
     _, sub = cv2.threshold(sub, 0, 255, cv2.THRESH_OTSU+cv2.THRESH_BINARY)
 
