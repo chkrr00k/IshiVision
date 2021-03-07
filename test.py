@@ -55,7 +55,8 @@ for n, m in ms.items():
 
 
     bounds = (mc.shape[0]//5, mc.shape[1]//8, mc.shape[0]*4//5, mc.shape[1]*7//8)
-    selector.score(m, cont, bounds, prt=True, name=n)
+    sc = selector.score(m, cont, bounds)
+    print(selector.get_score_string(*sc, n=n))
     
     #actual intresting parts highlighted here
     cv2.rectangle(mc, (mc.shape[0]//5, mc.shape[1]//8), (mc.shape[0]*4//5, mc.shape[1]*7//8), (0, 255, 0), 1)
