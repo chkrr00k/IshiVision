@@ -3,6 +3,7 @@ import common
 import cv2
 import numpy as np
 from functools import reduce
+from functools import cmp_to_key
 
 import utils
 
@@ -63,6 +64,8 @@ Returns:
 
     #size of the sum of all areas
     baseline = reduce(lambda a, b: a + b, map(lambda a: a.area,  meaningful))
+
+#TODO add a check for totally in area roi
     
  #       inp = cv2.circle(cv2.cvtColor(input, cv2.COLOR_GRAY2BGR), (int(c[0]), int(c[1])), 3, (0,255, 0), -3)
  #       cv2.imshow(str(name), inp)
@@ -72,18 +75,28 @@ Returns:
 def get_score_string(b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ibaa, obaa, n="Score"):
     """Returns the string representing the score results ready to print"""
     return """{}:
-    baseline            := {}
-    len(contour)~(aprx) := {} ~ {}
-    len(meaningful)     := {}
-    dominance           := {} / {}
-    baricenter          := {}
-    bound avg area      := {:.3f}
-    real avg area       := {:.3f}
-    median real area    := {:.3f}
-max > in bound          := {} ({:.2f})
+    baseline                := {}
+    len(contour)~(aprx)     := {} ~ {}
+    len(meaningful)         := {}
+    dominance               := {} / {}
+    baricenter              := {}
+    bound avg area          := {:.3f}
+    real avg area           := {:.3f}
+    median real area        := {:.3f}
+max > in bound              := {} ({:.2f})
     in/out bound avg area   := {:.3f} / {:.3f} [Note: summed values]
 """.format(n, b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ibaa, obaa)
 
-def rank(s):
-    print("NO HEURISTIC CURRENTLY APPLIED")
+def _max_rank_heu(a, b):
+    """Default heuristic taking the one with the highest ratio of contours in the bound"""
+    ibr = a[11] - b[11]
+    return ibr if ibr != 0 else (a[12]-a[13]) - (b[12]-b[13])
+
+#heu ideas:
+#   max in ratio
+#   average in area must be big, but not too big
+#   in/out area must be balanced
+#   FIXME not worky
+def rank(s, heu=_max_rank_heu):
+    """Returns the highest ranking best fit given a given heuristic, (or the default)"""
     return np.argmax([i[11] for i in s])

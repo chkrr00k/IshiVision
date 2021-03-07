@@ -3,12 +3,23 @@ import common
 import cv2
 import numpy as np
 
+import random
+
 import extract
 import utils
 import selector
 import visual
+import generator
 
-img = cv2.imread("ref/gen/1.jpg")
+gen = True
+
+if gen:
+    g = random.choice("1234567890")
+    img = generator.get_all_tables(g)[g]
+    print("Chosen: {}".format(g))
+else:
+    img = cv2.imread("ref/gen/1.jpg")
+
 cv2.imshow("Base image", img)
 
 #weight are approximated
@@ -48,9 +59,9 @@ for n, m in ms.items():
 
 i = selector.rank(scores)
 print("Best fit found: {}".format(i))
-n, m = list(ms.items())[i]
+n, best_fit = list(ms.items())[i]
 if show:
-    cv2.imshow("Best fit: {}".format(n), m)
+    cv2.imshow("Best fit: {}".format(n), best_fit)
 
 
 
