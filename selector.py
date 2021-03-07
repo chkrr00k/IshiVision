@@ -6,7 +6,8 @@ from functools import reduce
 
 import utils
 
-def score(input, cont, bounds,epsilon=1):
+@common.showtime
+def get_score(input, cont, bounds, epsilon=1):
     """Calculate an euristic to find the best picture
 Returns:
     baseline: the summed area of all white pixels
@@ -83,3 +84,6 @@ max > in bound          := {} ({:.2f})
     in/out bound avg area   := {:.3f} / {:.3f} [Note: summed values]
 """.format(n, b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ibaa, obaa)
 
+def rank(s):
+    print("NO HEURISTIC CURRENTLY APPLIED")
+    return np.argmax([i[11] for i in s])

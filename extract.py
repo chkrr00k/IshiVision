@@ -5,8 +5,9 @@ from matplotlib import pyplot as plt
 import maxima
 import categorize as cat
 import visual
+import common
 
-
+@common.showtime
 def get_masks(img, remove_white=True):
     """Gets the masks from an image using the local maxima method"""
 

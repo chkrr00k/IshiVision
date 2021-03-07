@@ -3,10 +3,25 @@ import numpy as np
 import math
 from functools import reduce
 
-def straight(img):
+
+def get_parent_contours(con, hi):
+    """Given a contours list and its hierarchy returns the parent contours and their bounding rects"""
+    if len(hi) == 0:
+        raise ValueError("The hierarchy must have elements in it")
+    rects, cont = list(), list()
+    for co, [_, _, _, Pa] in zip(con, hi[0]):
+        re = cv2.boundingRect(co)
+        #if Pa == -1 then it's a parent node, select only those as they are the main ones 
+        if Pa < 0:
+            rects.append(re)
+            cont.append(co)
+    return rects, cont
+
+
+def straight(img, angle=.15):
     """Straigten the text by wraping it of .15 rad on the left"""
     r, c = img.shape[:2]
-    shift = math.tan(.15)*r/2
+    shift = math.tan(angle)*r/2
     src, dst = np.float32([[0, 0],[c, 0],[0, r]]), np.float32([[-shift,0],[c-shift, 0],[shift, r]])
     M = cv2.getAffineTransform(src, dst)
     return cv2.warpAffine(img, M, (r, c), flags=cv2.INTER_LINEAR)
