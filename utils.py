@@ -38,6 +38,13 @@ def rect_center(r1, convert=False):
         r1 = rect_convert(r1)
     return (r1[0]+(r1[2]-r1[0])//2, r1[1]+(r1[3]-r1[1])//2)
 
+def rect_in_rect(rs, rb, convert=False):
+    """Tells if rs is totally in rb"""
+    if convert:
+        rs = rect_convert(rs)
+        rb = rect_convert(rb)
+    return (rb[0] <= rs[0] and rb[1] <= rs[1]) and (rs[2] <= rb[2] and rs[3] <= rb[3])
+
 def point_in_rect(p, r1, convert=False):
     """Returns if a point p is included in the rectangle r1, convert is to convert as define in conversion functions"""
     if convert:
@@ -127,9 +134,9 @@ def reduce_sections_area(cont, convert=True):
     return result
 #print(reduce_sections([[0,0, 1,1], [1,1, 2,2], [4,4, 5,5], [0,0,2,4], [2,2,3,3]]))
 
-#a = [0,0, 1,1]
-#b = [2,2, 3,3]
-#print("{} (False)".format(rect_intersect(a, b)))
+#a = [0,0, 4,4]
+#b = [2,2, 4,4]
+#print("{} (True)".format(rect_in_rect(b, a)))
 #print("{} (False)".format(rect_intersect(b, a)))
 
 #a = [0,0, 4,4]

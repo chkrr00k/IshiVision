@@ -59,6 +59,12 @@ Returns:
     out_bound = list(filter(lambda e: not utils.point_in_rect(utils.rect_center(e.bound), bounds), meaningful))
     out_bound_avg_area = reduce(lambda a, b: a + b, map(lambda e: e.area, out_bound))/len(out_bound)
 
+    tot_in_bound = list(filter(lambda e: utils.rect_in_rect(e.bound, bounds), meaningful))
+    tot_in_bound_avg_area = sum([a.area for a in tot_in_bound])/len(tot_in_bound)
+
+    tot_out_bound = list(filter(lambda e: not utils.rect_in_rect(e.bound, bounds), meaningful))
+    tot_out_bound_avg_area = sum([a.area for a in tot_in_bound])/len(tot_out_bound)
+    
     #median of the (real) areas
     median_area = np.median(np.array(list(map(lambda a: a.area, meaningful))))
 
@@ -70,9 +76,9 @@ Returns:
  #       inp = cv2.circle(cv2.cvtColor(input, cv2.COLOR_GRAY2BGR), (int(c[0]), int(c[1])), 3, (0,255, 0), -3)
  #       cv2.imshow(str(name), inp)
 
-    return baseline, lc, la, lm, dominance, total, c, bound_avg_area, real_avg_area, median_area, len(in_bound), len(in_bound)/lm, in_bound_avg_area, out_bound_avg_area
+    return baseline, lc, la, lm, dominance, total, c, bound_avg_area, real_avg_area, median_area, len(in_bound), len(in_bound)/lm, len(tot_in_bound), len(tot_in_bound)/lm, in_bound_avg_area, out_bound_avg_area
 
-def get_score_string(b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ibaa, obaa, n="Score"):
+def get_score_string(b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ltib, pltib, ibaa, obaa, n="Score"):
     """Returns the string representing the score results ready to print"""
     return """{}:
     baseline                := {}
@@ -83,9 +89,10 @@ def get_score_string(b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ibaa, obaa
     bound avg area          := {:.3f}
     real avg area           := {:.3f}
     median real area        := {:.3f}
-max > in bound              := {} ({:.2f})
+  > in bound                := {} ({:.2f})
+    tot in bound            := {} ({:.2f})
     in/out bound avg area   := {:.3f} / {:.3f} [Note: summed values]
-""".format(n, b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ibaa, obaa)
+""".format(n, b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ltib, pltib, ibaa, obaa)
 
 def _max_rank_heu(a, b):
     """Default heuristic taking the one with the highest ratio of contours in the bound"""
