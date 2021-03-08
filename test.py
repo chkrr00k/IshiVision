@@ -18,7 +18,7 @@ if gen:
     img = generator.get_all_tables(g)[g]
     print("Chosen: {}".format(g))
 else:
-    img = cv2.imread("ref/gen/3.jpg")
+    img = cv2.imread("ref/gen/4.jpg")
 
 cv2.imshow("Base image", img)
 

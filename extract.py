@@ -29,8 +29,9 @@ def get_masks(img, remove_white=True):
         del buck[(0,0)] 
 
     popular = cat.sort_buckets(buck)
-
-    lmx, groups = maxima.local(buck, popular, epsilon=50, distance=maxima.ma_dist_init(maxima.DEF_MALA_MATRIX))
+    
+    #previously 50
+    lmx, groups = maxima.local(buck, popular, epsilon=40, distance=maxima.ma_dist_init(maxima.DEF_MALA_MATRIX))
 
     LIMIT = int((img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4))
     result = dict()
