@@ -64,8 +64,8 @@ def ishihara(base, size, base_bg, bg, n_circles, c_on, c_off):
         _draw_circle(base, base_bg, result, circle, c_on, c_off)
 
     return result
-
-def get_all_tables(glyphs, heigh=200, bezel=40, thic=20, bg=(255,255,255), n_circles=550, c_on=[_color(0xF9BB82), _color(0xEBA170), _color(0xFCCD84)], c_off=[_color(0x9CA594), _color(0xACB4A5), _color(0xBBB964), _color(0xD7DAAA), _color(0xE5D57D), _color(0XD1D6AF)]):
+#c_on=[_color(0xF9BB82), _color(0xEBA170), _color(0xFCCD84)], c_off=[_color(0x9CA594), _color(0xACB4A5), _color(0xBBB964), _color(0xD7DAAA), _color(0xE5D57D), _color(0XD1D6AF)]
+def get_all_tables(glyphs, heigh=200, bezel=40, thic=20, bg=(255,255,255), n_circles=550, c_on=[_color(0xF9BB82),  _color(0xFCCD84)], c_off=[_color(0x9CA594), _color(0xACB4A5), _color(0xBBB964), _color(0xD7DAAA), _color(0xD1D6AF)]):
     """Returns a dictionary with ishihara'd glyphs, parameters may be applied"""
     return {k: ishihara(v, v.shape, 0, bg, n_circles, c_on, c_off) for k, v in matcher.get_all_glyphs_refs(glyphs, heigh, bezel, thic).items()}
 

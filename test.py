@@ -18,7 +18,7 @@ if gen:
     img = generator.get_all_tables(g)[g]
     print("Chosen: {}".format(g))
 else:
-    img = cv2.imread("ref/gen/1.jpg")
+    img = cv2.imread("ref/gen/3.jpg")
 
 cv2.imshow("Base image", img)
 
@@ -57,7 +57,7 @@ for n, m in ms.items():
         #compress the rectangles that are superimposed to eachothers to have only the main ones
         cv2.imshow("{} Mask with main contourns".format(n), visual.print_contours_bounding_rect(m, utils.reduce_sections(rects), bounds))
 
-i = selector.rank(scores)
+i = selector.rank(scores, verbose=True)
 print("Best fit found: {}".format(i))
 n, best_fit = list(ms.items())[i]
 if show:
