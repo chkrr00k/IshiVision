@@ -12,6 +12,9 @@ import visual
 import generator
 
 gen = True
+stra = False #straightens the image
+write = False #write the masks on disc
+show = True #shows the results
 
 if gen:
     g = random.choice("1234567890")
@@ -27,10 +30,6 @@ img = cv2.bilateralFilter(img, 9, 125, 50)
 print("Image of shape {}".format(img.shape))
 
 ms = extract.get_masks(img)
-
-stra = False #straightens the image
-write = False #write the masks on disc
-show = True #shows the results
 
 scores = list()
 

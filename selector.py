@@ -71,11 +71,6 @@ Returns:
     #size of the sum of all areas
     baseline = reduce(lambda a, b: a + b, map(lambda a: a.area,  meaningful))
 
-#TODO add a check for totally in area roi
-    
- #       inp = cv2.circle(cv2.cvtColor(input, cv2.COLOR_GRAY2BGR), (int(c[0]), int(c[1])), 3, (0,255, 0), -3)
- #       cv2.imshow(str(name), inp)
-
     return baseline, lc, la, lm, dominance, total, c, bound_avg_area, real_avg_area, median_area, len(in_bound), len(in_bound)/lm, len(tot_in_bound), len(tot_in_bound)/lm, in_bound_avg_area, out_bound_avg_area, tot_in_bound_area, tot_out_bound_area
 
 def get_score_string(b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ltib, pltib, ibaa, obaa, tibaa, tobaa, n="Score"):
@@ -92,36 +87,30 @@ def get_score_string(b, lc, la, lm, d, t, c, baa, raa, ma, lib, plib, ltib, plti
     total in/out bound avg area := {:.3f} / {:.3f}
 """.format(n, b, lc, la, lm, d, t, d/t, c, baa, raa, ma, lib, plib, ltib, pltib, ibaa, obaa, tibaa, tobaa)
 
-def _max_rank_heu(a, b):
-    """Default heuristic taking the one with the highest ratio of contours in the bound"""
-    ibr = a[11] - b[11]
-    return ibr if ibr != 0 else (a[12]-a[13]) - (b[12]-b[13])
-
 def _filter_band_dominance(input, base, uepsilon, lepsilon):
+    """Filter all image whose dominance is not into average band"""
     DOM, TOT = 4, 5
     avg = sum([i[DOM]/i[TOT] for i in base]) /len(base)
     return list(filter(lambda i: avg * uepsilon > i[DOM]/i[TOT] > avg * lepsilon, input)), (avg*uepsilon, avg*lepsilon)
 
 def _filter_insuff_contours(input, base, epsilon):
+    """Filter images with not enough contours"""
     MEAN_CONT = 3
     avg = sum([i[MEAN_CONT] for i in base]) / len(base)
     return list(filter(lambda i: i[MEAN_CONT] > avg * epsilon, input)), avg * epsilon 
 
 def _filter_low_median_area(input, base, epsilon):
+    """Filter images with low median area"""
     MEDIAN = 9
     avg = sum([i[MEDIAN] for i in base]) / len(base)
     return list(filter(lambda i: i[MEDIAN] > avg * epsilon, input)), avg * epsilon 
 
 def _filter_negative_area(input, epsilon):
+    """Filter images with negative image proportion"""
     IBAA, OBAA = 14, 15
     PLIB = 11
     return list(filter(lambda i: i[IBAA]*i[PLIB]>i[OBAA]*(1-i[PLIB])+epsilon, input))
 
-#heu ideas:
-#   max in ratio
-#   average in area must be big, but not too big
-#   in/out area must be balanced
-#   FIXME not worky
 def rank(s, verbose=False):
     """Returns the highest ranking best fit given a given heuristic, (or the default)"""
     f = s
