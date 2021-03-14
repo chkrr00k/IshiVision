@@ -21,3 +21,6 @@ tags
 #pycache
 __pycache__/
 *.py[cod]
+
+#data
+*.npz

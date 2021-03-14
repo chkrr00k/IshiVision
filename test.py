@@ -7,11 +7,9 @@ import random
 
 import extract
 import generator
+import knn
 
 gen = True
-stra = False #straightens the image
-write = False #write the masks on disc
-show = True #shows the results
 
 if gen:
     g = random.choice("1234567890")
@@ -24,8 +22,7 @@ cv2.imshow("Base image", img)
 
 best_fit, n = extract.get_optimal_mask(img)
 
-if show:
-    cv2.imshow("Best fit: {}".format(n), best_fit)
+cv2.imshow("Best fit: {}".format(n), best_fit)
 
 
 
