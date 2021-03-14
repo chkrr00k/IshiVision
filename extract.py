@@ -49,6 +49,7 @@ def get_masks(img, remove_white=True):
 
 @common.showtime
 def get_optimal_mask(img, verbose=False, stra=False, write=False, show=False):
+    """Given an image, will return its optimal mask for the next step of the ocr"""
     #weight are approximated
     img = cv2.bilateralFilter(img, 9, 125, 50)
     if verbose:
