@@ -24,6 +24,14 @@ def _unpackage(train_set):
 
 @common.showtime
 def train(train_set, size, dump=None, load=None):
+    """Trains a knn with the given train_set of samples.
+        size is the size of each sample
+        if dump is a file path (without estention) it'll save the trainset there
+        if load is a file path (without estention) it'll load the trainset from there
+            train_set will be ignored if these are defined
+            they can't be defined both as it makes no sense
+    returns the knn object
+    """
     if dump is not None and load is not None:
         raise ValueError("You can't both dump and load as it doesn't make sense")
 
@@ -44,22 +52,25 @@ def train(train_set, size, dump=None, load=None):
     return knn
 
 @common.showtime
-def nearest(input, knn, k=5, glyphs=GLYPHS):
+def nearest(input, knn, k=5, glyphs=GLYPHS, verbose=False):
+    """Given a knn object and an input mask will return the label of the mask for the curren knn training"""
     samp = np.array(input).reshape(1, input.shape[0]*input.shape[1]).astype(np.float32)
     print(samp.shape)
     ret, res, neigh, dist = knn.findNearest(samp, k=k)
-    print("r:{}, res:{}, neigh:{}, dist:{}".format(ret, res, neigh, dist))
+
+    if verbose:
+        print("r:{}, res:{}, neigh:{}, dist:{}".format(ret, res, neigh, dist))
 
     lbl = _delabelize(glyphs)[res[0][0]]
-    print("ASSUMED {}".format(lbl))
 
     return lbl
 
 def get_train_set(size, glyphs=GLYPHS, verbose=False):
+    """Will generate a sized trainset"""
     result = list()
     lbl = _labelize(glyphs)
     for i in range(size):
-        glyph = random.choice(glyphs)
+        glyph = random.choice(glyphs) #TODO remove this random 
         plate = generator.get_all_tables(glyph)[glyph]
 
         mask, _ = extract.get_optimal_mask(plate)
@@ -72,7 +83,7 @@ def get_train_set(size, glyphs=GLYPHS, verbose=False):
 
 
 if __name__ == "__main__":
-    gen = False
+    gen = False # if True will calculate a new trainset
     if gen:
         s, size = get_train_set(200, verbose=True)
     else:
@@ -83,7 +94,8 @@ if __name__ == "__main__":
     print("Trained")
     
     res = 0
-    for i in range(30):
+    TOT = 30
+    for i in range(TOT):
         c = str(i%10)
         t, _ = extract.get_optimal_mask(generator.get_all_tables(c)[c])
 
@@ -91,4 +103,4 @@ if __name__ == "__main__":
         print("{} {}".format(r, c))
         if r == c:
             res+=1
-    print(res)
+    print("Accuracy: {:.2f} ({}/{})".format(res/TOT, res, TOT))
