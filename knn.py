@@ -81,17 +81,19 @@ if __name__ == "__main__":
     size = 1 #size of the trainset
     TOT = 30 #size of the testset
     if gen:
+        d="data_set"
         size = 1
         s = ocr.OCR.get_train_set(size, verbose=True)
         l = None
 
         assert len(s)==len(ocr.GLYPHS)*size, "Must generate the correct number of element ({}, {})".format(len(s), len(ocr.GLYPHS)*size)
     else:
+        d=None
         s = None
         l = "data_set"
     print("Trained")
     
-    with KnnOCR(load=l, train_set=s, verbose=True) as o:
+    with KnnOCR(dump=d, load=l, train_set=s, verbose=True) as o:
         assert o is not None, "A new object must be created"
         res = 0
         for i in range(TOT):
