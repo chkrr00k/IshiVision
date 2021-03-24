@@ -3,6 +3,8 @@ import numpy as np
 
 import common
 
+import math
+
 def _get_neighbourhood(base, coords, radius=1):
     x, y = coords
     ux, lx = x-radius if x-radius > 0 else 0, x+radius+1 if x+radius+1 < base.shape[0]-1 else base.shape[0]-1
@@ -19,6 +21,19 @@ def clean(input):
 #             print("{} FG({})".format(c, n))
              result[c] = 255
     return result
+
+def clean2(mc):
+    dil_factor = int(math.floor(math.log10(abs(mc.shape[0])))) + 2
+    el = cv2.getStructuringElement(cv2.MORPH_RECT, (int(3*dil_factor + 1), int(3*dil_factor + 1)))
+    mc = cv2.dilate(mc, el)
+    #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+    #mc = cv2.morphologyEx(mc, cv2.MORPH_CLOSE, kernel)
+    
+    mc = cv2.medianBlur(mc, 5)
+    
+    img = clean(mc)
+    
+    return img
 
 
 def imshow(img):
