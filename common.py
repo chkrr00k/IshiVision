@@ -6,6 +6,8 @@ gi.require_version("Gtk", "2.0")
 from functools import wraps
 from time import time
 
+debug = False
+
 def showtime(func):
     """Prints the time of execution of a function"""
     @wraps(func)
@@ -15,5 +17,6 @@ def showtime(func):
             return func(*args, **kwargs)
         finally:
             t1 = time()
-            print("{}: {:.3f}s".format(func.__name__, t1-t0))
+            if debug:
+                print("{}: {:.3f}s".format(func.__name__, t1-t0))
     return _time
