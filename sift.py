@@ -9,12 +9,11 @@ import ocr
 import matcher
 
 class SiftOCR(ocr.OCR):
-    def __init__(self, train_set=None, infos=None, dump=None, load=None, verbose=False):
+    def __init__(self, train_set=None, dump=None, load=None, verbose=False):
         if dump is not None or load is not None:
             raise ValueError("Dump and load are not supported for this method")
         self.sift = cv2.SIFT_create()
-        self.train_set = train_set
-        self.infos = infos
+        self.train_set, self.infos = SiftOCR.get_train_set()
         self.verbose = verbose
 
     def read(self, input, k=2, mmc=6, ip=dict(algorithm=1, trees=5), sp=dict(checks=50), verbose=False):
@@ -66,7 +65,6 @@ class SiftOCR(ocr.OCR):
         c = [(k, v) for k, v in matcher.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SCRIPT_COMPLEX]).items()]
         c.extend([(k, v) for k, v in matcher.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SIMPLEX]).items()])
         infos = SiftOCR._get_infos(c)
-        print(len(c))
         return c, infos
 
 if __name__ == "__main__":
