@@ -9,10 +9,13 @@ import ocr
 import matcher
 
 class SiftOCR(ocr.OCR):
-    def __init__(self, train_set, infos):
+    def __init__(self, train_set=None, infos=None, dump=None, load=None, verbose=False):
+        if dump is not None or load is not None:
+            raise ValueError("Dump and load are not supported for this method")
         self.sift = cv2.SIFT_create()
         self.train_set = train_set
         self.infos = infos
+        self.verbose = verbose
 
     def read(self, input, k=2, mmc=6, ip=dict(algorithm=1, trees=5), sp=dict(checks=50), verbose=False):
         input = cv2.medianBlur(input, 11)
@@ -28,7 +31,7 @@ class SiftOCR(ocr.OCR):
 
                 M, mask = cv2.findHomography(src, dst, cv2.RANSAC, 20.0)
                 if M is not None:
-                    if verbose:
+                    if verbose or self.verbose:
                         print("Found an homography for {}".format(l))
                     #matMask = mask.ravel().tolist()
                     #h, w = input.shape
@@ -36,7 +39,7 @@ class SiftOCR(ocr.OCR):
                     #dst_i = cv2.perspectiveTransform(pts, M)
                     #dp = dict(matchColor=(0,255,0), singlePointColor=None, matchesMask=matMask, flags=2)
                     result.append(l)
-            if verbose:
+            if verbose or self.verbose:
                 print("matches('{}') := {}".format(l, len(matches)))
         return result
 

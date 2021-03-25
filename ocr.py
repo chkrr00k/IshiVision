@@ -44,8 +44,9 @@ class OCR(abc.ABC):
 
 
 class MockOCR(OCR):
-    def __init__(self):
-        pass
+    def __init__(self, dump=None, load=None, train_set=None, verbose=None):
+        import sys
+        print("Warning! MockOCR has been selected", file=sys.stderr)
 
     def read(self, img):
         return "&"
