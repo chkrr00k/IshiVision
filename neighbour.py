@@ -22,18 +22,17 @@ def clean(input):
              result[c] = 255
     return result
 
-def clean2(mc):
-    dil_factor = int(math.floor(math.log10(abs(mc.shape[0])))) + 2
+def clean2(input):
+    dil_factor = int(math.floor(math.log10(abs(input.shape[0])))) + 2
     el = cv2.getStructuringElement(cv2.MORPH_RECT, (int(3*dil_factor + 1), int(3*dil_factor + 1)))
-    mc = cv2.dilate(mc, el)
+    input = cv2.dilate(input, el)
     #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
     #mc = cv2.morphologyEx(mc, cv2.MORPH_CLOSE, kernel)
     
-    mc = cv2.medianBlur(mc, 5)
+    input = cv2.medianBlur(input, 5)
     
-    img = clean(mc)
+    return clean(input)
     
-    return img
 
 
 def imshow(img):
@@ -41,12 +40,15 @@ def imshow(img):
     plt.show()
 
 if __name__ == "__main__":
-    i = cv2.imread("ref/ssd4.jpg")
+    i = cv2.imread("ref/gen/con/3.jpg")
     i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
     _, i = cv2.threshold(i, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-    k = clean(i)
-    cv2.imshow("K", k)
+    k1 = clean(i)
+    k2 = clean2(i)
+    cv2.imshow("Old", i)
+    cv2.imshow("clean", k1)
+    cv2.imshow("clean2", k2)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
