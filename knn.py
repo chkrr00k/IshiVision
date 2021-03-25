@@ -11,9 +11,9 @@ import ocr
 class KnnOCR(ocr.OCR):
 
     def __init__(self, train_set=None, dump=None, load=None, glyphs=ocr.GLYPHS, verbose=False):
-        self.knn = self.__train(train_set, dump, load)
-        self.verbose=False
+        self.verbose = verbose
         self.glyphs = glyphs
+        self.knn = self.__train(train_set, dump, load)
 
     def read(self, input, k=5):
         """Reads the number in the input image passed, k is the knn paramether"""
@@ -28,7 +28,7 @@ class KnnOCR(ocr.OCR):
 
     @common.showtime
     def __train(self, train_set=None, dump=None, load=None):
-        """Trains a knn with the given train_set of samples.
+        """Trains a knn with the given train_set size of samples.
             if dump is a file path (without estention) it'll save the trainset there
             if load is a file path (without estention) it'll load the trainset from there
                 train_set will be ignored if these are defined
@@ -39,7 +39,8 @@ class KnnOCR(ocr.OCR):
             with np.load("{}.npz".format(load)) as save:
                 data, labels = save["data"], save["labels"]
         else:
-            data, labels = self.__unpackage(train_set)
+            t = ocr.OCR.get_train_set(train_set, verbose=self.verbose)
+            data, labels = self.__unpackage(t)
 
         size = reduce(lambda a, b: a*b, data[0].shape)
         data = data.reshape(-1, size).astype(np.float32)
