@@ -7,6 +7,7 @@ import random
 from functools import reduce
 
 import ocr
+import neighbour
 
 class KnnOCR(ocr.OCR):
 
@@ -17,7 +18,7 @@ class KnnOCR(ocr.OCR):
 
     def read(self, input, k=5):
         """Reads the number in the input image passed, k is the knn paramether"""
-        return self.__nearest(input, self.knn, k, self.glyphs, verbose=self.verbose)
+        return self.__nearest(neighbour.clean2(input), self.knn, k, self.glyphs, verbose=self.verbose)
 
     def __unpackage(self, train_set):
         data, labels = list(), list()
@@ -41,7 +42,9 @@ class KnnOCR(ocr.OCR):
         else:
             t = ocr.OCR.get_train_set(train_set, verbose=self.verbose)
             data, labels = self.__unpackage(t)
-
+        
+            data = np.array([neighbour.clean2(d) for d in data])
+        
         size = reduce(lambda a, b: a*b, data[0].shape)
         data = data.reshape(-1, size).astype(np.float32)
 
@@ -78,7 +81,7 @@ if __name__ == "__main__":
     import generator
     import extract
     
-    gen = False # if True will calculate a new trainset
+    gen = True # if True will calculate a new trainset
     size = 1 #size of the trainset
     TOT = 30 #size of the testset
     if gen:
@@ -94,7 +97,7 @@ if __name__ == "__main__":
         l = "data_set"
     print("Trained")
     
-    with KnnOCR(dump=d, load=l, train_set=s, verbose=True) as o:
+    with KnnOCR(dump=d, load=l, train_set=size, verbose=True) as o:
         assert o is not None, "A new object must be created"
         res = 0
         for i in range(TOT):

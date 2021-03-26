@@ -7,17 +7,18 @@ from collections import namedtuple
 
 import ocr
 import matcher
+import neighbour
 
 class SiftOCR(ocr.OCR):
     def __init__(self, train_set=None, dump=None, load=None, verbose=False):
         if dump is not None or load is not None:
             raise ValueError("Dump and load are not supported for this method")
-        self.sift = cv2.SIFT_create()
         self.train_set, self.infos = SiftOCR.get_train_set()
         self.verbose = verbose
+        self.sift = cv2.SIFT_create()
 
     def read(self, input, k=2, mmc=6, ip=dict(algorithm=1, trees=5), sp=dict(checks=50), verbose=False):
-        input = cv2.medianBlur(input, 11)
+        input = neighbour.clean2(input)
         result = list()
         
         kp, des = self.sift.detectAndCompute(input, None)

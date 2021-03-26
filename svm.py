@@ -13,17 +13,18 @@ import random
 #from functools import reduce
 
 import ocr
+import neighbour
 
 class SvmOCR(ocr.OCR):
 
     def __init__(self, train_set=None, dump=None, load=None, glyphs=ocr.GLYPHS, verbose=False):
-        self.svm = self.__train(train_set, dump, load)
-        self.verbose=False
+        self.verbose=verbose
         self.glyphs = glyphs
+        self.svm = self.__train(train_set, dump, load)
 
     def read(self, input):
         """Reads the number in the input image passed"""
-        return self.__nearest(input, self.svm, self.glyphs, verbose=self.verbose)
+        return self.__nearest(neighbour.clean2(input), self.svm, self.glyphs, verbose=self.verbose)
 
     def __unpackage(self, train_set):
         data, labels = list(), list()
@@ -75,9 +76,10 @@ class SvmOCR(ocr.OCR):
         if load is not None:
             svm = cv2.ml.SVM_load("{}.dat".format(load))
         else:
-            data, labels = self.__unpackage(train_set)
-
-            data = [self.__hog(self.__deskew(i)) for i in data]
+            t = ocr.OCR.get_train_set(train_set, verbose=self.verbose)
+            data, labels = self.__unpackage(t)
+            
+            data = [self.__hog(self.__deskew(neighbour.clean2(i))) for i in data]
 
             data = np.float32(data).reshape(-1, 64)
 
@@ -104,7 +106,7 @@ class SvmOCR(ocr.OCR):
         res = svm.predict(samp)[1]
 
         if verbose:
-            print("r:{}, res:{}".format(ret, res))
+            print("res:{}".format(res))
 
         lbl = ocr.OCR.delabelize(glyphs)[res[0][0]]
 
@@ -121,7 +123,7 @@ if __name__ == "__main__":
     import generator
     import extract
     
-    gen = False # if True will calculate a new trainset
+    gen = True # if True will calculate a new trainset
     size = 1 #size of the trainset
     TOT = 30 #size of the testset
     if gen:
@@ -136,7 +138,7 @@ if __name__ == "__main__":
         l = "data_set"
     print("Trained")
     
-    with SvmOCR(dump=d, load=l, train_set=s, verbose=True) as o:
+    with SvmOCR(dump=d, load=l, train_set=size, verbose=True) as o:
         assert o is not None, "A new object must be created"
         res = 0
         for i in range(TOT):

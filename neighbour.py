@@ -24,12 +24,14 @@ def clean(input):
 
 def clean2(input):
     dil_factor = int(math.floor(math.log10(abs(input.shape[0])))) + 2
-    el = cv2.getStructuringElement(cv2.MORPH_RECT, (int(3*dil_factor + 1), int(3*dil_factor + 1)))
-    #input = cv2.dilate(input, el)
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 6))
-    input = cv2.morphologyEx(input, cv2.MORPH_CLOSE, kernel)
+    el = cv2.getStructuringElement(cv2.MORPH_RECT, (int(2*dil_factor + 1), int(2*dil_factor + 1)))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 6))
     
     input = cv2.medianBlur(input, 5)
+    
+    #input = cv2.dilate(input, el)
+    input = cv2.morphologyEx(input, cv2.MORPH_CLOSE, kernel)
+    
     
     return clean(input)
     

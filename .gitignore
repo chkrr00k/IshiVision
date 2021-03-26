@@ -25,3 +25,6 @@ __pycache__/
 #data
 *.npz
 *.dat
+
+#notebook
+*.ipynb
