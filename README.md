@@ -26,5 +26,5 @@ See <file.pdf here> for more informations
 
 ### Credits
 This program was made for a Computer Vision course in a Master Degree in Computer Engineering by:  
-- <your_name> [<your_email@domain.tdl>]
+- davidegiordano [davide.giordano6@studio.unibo.it]
 - chkrr00k [chkrr00k@cock.li]
