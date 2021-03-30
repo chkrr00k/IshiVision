@@ -35,6 +35,7 @@ except getopt.GetoptError:
 ocr_types = {
         "knn" : dict(cls="KnnOCR", mdl="knn"),
         "svm" : dict(cls="SvmOCR", mdl="svm"),
+        "sksvm" : dict(cls="SkSvmOCR", mdl="sksvm"),
         "none" : dict(cls="MockOCR", mdl="ocr"),
         "sift" : dict(cls="SiftOCR", mdl="sift"),
         "gnb" : dict(cls="GaussianNBOCR", mdl="gnb")
