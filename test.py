@@ -6,13 +6,11 @@ import numpy as np
 import random
 import getopt
 import sys
+import importlib
 
 import extract
 import generator
-import knn
-import svm
 import ocr
-import sift
 
 HELP_MESSAGE = """Help:
 -h, --help              Displays this help
@@ -35,10 +33,11 @@ except getopt.GetoptError:
     print("Wrong argument")
     print(HELP_MESSAGE)
 ocr_types = {
-        "knn" : knn.KnnOCR,
-        "svm" : svm.SvmOCR,
-        "none" : ocr.MockOCR,
-        "sift" : sift.SiftOCR
+        "knn" : dict(cls="KnnOCR", mdl="knn"),
+        "svm" : dict(cls="SvmOCR", mdl="svm"),
+        "none" : dict(cls="MockOCR", mdl="ocr"),
+        "sift" : dict(cls="SiftOCR", mdl="sift"),
+        "gnb" : dict(cls="GaussianNBOCR", mdl="gnb")
         }
 
 settings = {
@@ -95,7 +94,8 @@ if settings["a"] > 0 and settings["c"] is not None:
 
 verbose = settings["v"]
 debug = settings["db"]
-ocr_class = settings["k"]
+m = importlib.import_module(settings["k"]["mdl"]) # dynamic module import
+ocr_class = getattr(m, settings["k"]["cls"]) # given the module m, get the requested class
 load = settings["l"]
 dump = settings["d"]
 accuracy = settings["a"]
