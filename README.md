@@ -23,6 +23,7 @@ See <file.pdf here> for more informations
 `-c, --char <char>`       Specify the char to test  
 `--gkt`                   Enables gkt fixes for debian 10 and OpenCV 3.something  
 `--silent`                Produce no output  
+`-j <json file>`          Select ocr modules file  
 
 ### Credits
 This program was made for a Computer Vision course in a Master Degree in Computer Engineering by:  
