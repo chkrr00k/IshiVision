@@ -7,10 +7,11 @@ import random
 import getopt
 import sys
 import importlib
+import json
 
 import extract
 import generator
-import ocr
+#import ocr
 
 HELP_MESSAGE = """Help:
 -h, --help              Displays this help
@@ -25,24 +26,17 @@ HELP_MESSAGE = """Help:
 -c, --char <char>       Specify the char to test
 --gkt                   Enables gkt fixes for debian 10 and OpenCV 3.something
 --silent                Produce no output
+-j <json file>          Select ocr modules file
 """
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:", ["ocr", "train", "load", "dump", "verbose", "size", "help", "debug", "accuracy", "char", "gtk", "silent"])
+    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:", ["ocr", "train", "load", "dump", "verbose", "size", "help", "debug", "accuracy", "char", "gtk", "silent"])
 except getopt.GetoptError:
     print("Wrong argument")
     print(HELP_MESSAGE)
-ocr_types = {
-        "knn" : dict(cls="KnnOCR", mdl="knn"),
-        "svm" : dict(cls="SvmOCR", mdl="svm"),
-        "sksvm" : dict(cls="SkSvmOCR", mdl="sksvm"),
-        "none" : dict(cls="MockOCR", mdl="ocr"),
-        "sift" : dict(cls="SiftOCR", mdl="sift"),
-        "gnb" : dict(cls="GaussianNBOCR", mdl="gnb")
-        }
 
 settings = {
-        "k" : ocr.MockOCR,
+        "k" : None,
         "t" : False,
         "s" : 2,
         "l" : None,
@@ -51,11 +45,12 @@ settings = {
         "db" : False,
         "a" : 0,
         "c" : None,
-        "sil" : False
+        "sil" : False,
+        "j": "modules.json"
         }
 for opt, arg in opts:
     if opt in ("-k", "--ocr"):
-        settings["k"] = ocr_types[arg]
+        settings["k"] = arg
     elif opt in ("-t", "--train"):
         settings["t"] = True
     elif opt in ("-l", "--load"):
@@ -80,6 +75,31 @@ for opt, arg in opts:
         gi.require_version("Gtk", "2.0")
     elif opt in ("--silent") :
         settings["sil"] = True
+    elif opt in ("-j"):
+        settings["j"] = arg
+
+debug = settings["db"]
+verbose = settings["v"]
+if debug:
+    print("Debug mode: ON")
+    print("Settings: {}".format(settings))
+    common.debug = True
+    verbose = True
+try:
+    with open(settings["j"], "r") as f:
+        modules = json.load(f)
+    if settings["k"] in modules["ocr"]:
+        settings["k"] = modules["ocr"][settings["k"]]
+    elif settings["k"] is None:
+        settings["k"] = modules["ocr"][modules["default"]]
+    else:
+        print("Your selected OCR method (-k) does not exist")
+        sys.exit(-2)
+except Exception as e:
+    print("Your module file is likely misformatted or you selected a non existing OCR method")
+    if debug:
+        print(e)
+    sys.exit(-4)
 
 if settings["l"] and settings["d"]:
     print("Setting -l and -d makes sense only if you want to copy your trainset, be aware!")
@@ -88,15 +108,19 @@ if settings["t"] and settings["l"]:
     sys.exit(-1)
 if not settings["t"] and settings["l"] is None:
     print("Either -t or -l must be specified")
-    sys.exit(-1)
+    sys.exit(-3)
 if settings["a"] > 0 and settings["c"] is not None:
     print("Either --accuracy test or -char may be specified")
+    sys.exit(-5)
 
-
-verbose = settings["v"]
-debug = settings["db"]
-m = importlib.import_module(settings["k"]["mdl"]) # dynamic module import
-ocr_class = getattr(m, settings["k"]["cls"]) # given the module m, get the requested class
+try:
+    m = importlib.import_module(settings["k"]["mdl"]) # dynamic module import
+    ocr_class = getattr(m, settings["k"]["cls"]) # given the module m, get the requested class
+except Exception as e:
+    print("Failed to load the selected OCR due to \"{}\"".format(e))
+    sys.exit(-6)
+if debug:
+    print("Loaded: {}".format(ocr_class))
 load = settings["l"]
 dump = settings["d"]
 accuracy = settings["a"]
@@ -105,11 +129,7 @@ size = settings["s"]
 train = size if settings["t"] else None
 silent = settings["sil"]
 
-if debug:
-    print("Debug mode: ON")
-    print("Settings: {}".format(settings))
-    common.debug = True
-    verbose = True
+
 
 if accuracy > 0:
     hits = 0
