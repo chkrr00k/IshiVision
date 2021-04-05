@@ -5,7 +5,8 @@
 		"sksvm": {"cls": "SkSvmOCR", "mdl": "sksvm"},
 		"none": {"cls": "MockOCR", "mdl": "ocr"},
 		"sift": {"cls": "SiftOCR", "mdl": "sift"},
-		"gnb": {"cls": "GaussianNBOCR", "mdl": "gnb"}
+		"gnb": {"cls": "GaussianNBOCR", "mdl": "gnb"},
+		"area" : {"cls": "AreaOCR", "mdl": "are"}
 	},
 	"default": "none"
 
