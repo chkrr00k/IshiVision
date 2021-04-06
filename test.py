@@ -27,26 +27,28 @@ HELP_MESSAGE = """Help:
 --gkt                   Enables gkt fixes for debian 10 and OpenCV 3.something
 --silent                Produce no output
 -j <json file>          Select ocr modules file
+-i, --input <file>      Read the number form the given file
 """
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:", ["ocr", "train", "load", "dump", "verbose", "size", "help", "debug", "accuracy", "char", "gtk", "silent"])
+    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:", ["ocr", "train", "load", "dump", "verbose", "size", "help", "debug", "accuracy", "char", "gtk", "silent", "input"])
 except getopt.GetoptError:
     print("Wrong argument")
     print(HELP_MESSAGE)
 
 settings = {
-        "k" : None,
-        "t" : False,
-        "s" : 2,
-        "l" : None,
-        "d" : None,
-        "v" : False,
-        "db" : False,
-        "a" : 0,
-        "c" : None,
-        "sil" : False,
-        "j": "modules.json"
+        "k": None,
+        "t": False,
+        "s": 2,
+        "l": None,
+        "d": None,
+        "v": False,
+        "db": False,
+        "a": 0,
+        "c": None,
+        "sil": False,
+        "j": "modules.json",
+        "i": None
         }
 for opt, arg in opts:
     if opt in ("-k", "--ocr"):
@@ -77,6 +79,8 @@ for opt, arg in opts:
         settings["sil"] = True
     elif opt in ("-j"):
         settings["j"] = arg
+    elif opt in ("-i", "--input"):
+        settings["i"] = arg
 
 debug = settings["db"]
 verbose = settings["v"]
@@ -109,8 +113,8 @@ if settings["t"] and settings["l"]:
 if not settings["t"] and settings["l"] is None:
     print("Either -t or -l must be specified")
     sys.exit(-3)
-if settings["a"] > 0 and settings["c"] is not None:
-    print("Either --accuracy test or -char may be specified")
+if len(list(filter(lambda a: a, [settings["a"] > 0, settings["c"] is not None, settings["i"] is not None]))) > 1:
+    print("Either --accuracy test, --char or --input may be specified")
     sys.exit(-5)
 
 try:
@@ -128,6 +132,7 @@ character = settings["c"]
 size = settings["s"]
 train = size if settings["t"] else None
 silent = settings["sil"]
+input = settings["i"]
 
 
 
@@ -142,6 +147,17 @@ if accuracy > 0:
                 hits += 1
     if not silent:
         print("Accuracy: {:.2f} ({}/{})".format(hits/accuracy, hits, accuracy))
+elif input:
+    img = cv2.imread(input)
+    if img is None or type(img) is not np.ndarray:
+        print("Failed to load {} file".format(input))
+        sys.exit(-7)
+
+    with ocr_class(train_set=train, dump=dump, load=load, verbose=verbose) as o:
+        img, _ = extract.get_optimal_mask(img)
+        r = o.read(img)
+    if not silent:
+        print("Found {}".format(r))
 else:
     character = character if character is not None else random.choice("1234567890")
     if debug:
