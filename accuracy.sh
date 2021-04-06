@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a TYPES=("knn" "svm" "gnb" "sksvm" "area")
+declare -a TYPES=("sift" "knn" "svm" "gnb" "sksvm" "area")
 declare -a TRAIN_SETS=("10" "20" "100")
 TEST_SET=50
 FILE_NAME="data_set"
@@ -13,7 +13,7 @@ FIRST=true
 echo "Testing" $K
     for TS in "${TRAIN_SETS[@]}"; do
         echo "Train set size:" "$(($TS * 10))"
-        if [ "$K" = "area" ]; then
+        if [ "$K" = "sift" ] || [ "$K" = "area" ]; then
             python3 test.py -k $K -t -s $TS -a $TEST_SET
         elif [ "$FIRST" = true ]; then
             python3 test.py -k $K -t -s $TS -d $FILE_NAME -a $TEST_SET
