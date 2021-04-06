@@ -31,7 +31,7 @@ HELP_MESSAGE = """Help:
 """
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:", ["ocr", "train", "load", "dump", "verbose", "size", "help", "debug", "accuracy", "char", "gtk", "silent", "input"])
+    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:", ["ocr=", "train=", "load=", "dump=", "verbose", "size=", "help", "debug", "accuracy=", "char=", "gtk", "silent", "input="])
 except getopt.GetoptError:
     print("Wrong argument")
     print(HELP_MESSAGE)
