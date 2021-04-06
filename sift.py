@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 from collections import namedtuple
+import random
 
 import ocr
 import matcher
@@ -17,19 +18,19 @@ class SiftOCR(ocr.OCR):
         self.verbose = verbose
         self.sift = cv2.SIFT_create()
 
-    def read(self, input, k=2, mmc=6, ip=dict(algorithm=1, trees=5), sp=dict(checks=50), verbose=False):
+    def read(self, input, k=2, mmc=10, ip=dict(algorithm=1, trees=5), sp=dict(checks=50), verbose=False):
         input = neighbour.clean2(input)
         result = list()
         
         kp, des = self.sift.detectAndCompute(input, None)
         flann = cv2.FlannBasedMatcher(ip, sp)
         for (l, m), i in zip(self.train_set, self.infos):
-            matches = [m for m, n in flann.knnMatch(des, i.des, k=k) if m.distance < .75 * n.distance]
+            matches = [m for m, n in flann.knnMatch(des, i.des, k=k) if m.distance < .7 * n.distance]
             if len(matches) > mmc:
                 src = np.float32([kp[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
                 dst = np.float32([i.kp[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
 
-                M, mask = cv2.findHomography(src, dst, cv2.RANSAC, 20.0)
+                M, mask = cv2.findHomography(src, dst, cv2.RANSAC, 5.0)
                 if M is not None:
                     if verbose or self.verbose:
                         print("Found an homography for {}".format(l))
@@ -41,7 +42,7 @@ class SiftOCR(ocr.OCR):
                     result.append(l)
             if verbose or self.verbose:
                 print("matches('{}') := {}".format(l, len(matches)))
-        return result
+        return random.choice(result) if len(result) > 0 else None
 
     def __enter__(self):
         return self
@@ -73,8 +74,9 @@ if __name__ == "__main__":
     import extract
     
     ts, i = SiftOCR.get_train_set()
-    with SiftOCR(ts, i) as o:
-        ch = "3"
-        t, _ = extract.get_optimal_mask(generator.get_all_tables(ch)[ch])
-        r = o.read(t)
-        print("Has been found: {}, Was expected: {}".format(r, ch))
+    with SiftOCR(train_set=1) as o:
+#        ch = "3"
+#        t, _ = extract.get_optimal_mask(generator.get_all_tables(ch)[ch])
+        for l, t in matcher.get_all_glyphs_refs(ocr.GLYPHS).items():
+            r = o.read(t)
+            print("Has been found: {}, Was expected: {}".format(r, l))
