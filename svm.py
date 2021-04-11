@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 
 import random
-#from functools import reduce
+from functools import reduce
 
 import ocr
 import neighbour
@@ -79,15 +79,21 @@ class SvmOCR(ocr.OCR):
             t = ocr.OCR.get_train_set(train_set, verbose=self.verbose)
             data, labels = self.__unpackage(t)
             
-            data = [self.__hog(self.__deskew(neighbour.clean2(i))) for i in data]
-
-            data = np.float32(data).reshape(-1, 64)
+            #data = [self.__hog(self.__deskew(neighbour.clean2(i))) for i in data]
+            
+            #data = np.float32(data).reshape(-1, 64)
+            
+            data = [self.__deskew(neighbour.clean2(i)) for i in data]
+            size = reduce(lambda a, b: a*b, data[0].shape)
+            
+            data = np.float32(data).reshape(-1, size).astype(np.float32)
 
             svm = cv2.ml.SVM_create()
             svm.setKernel(cv2.ml.SVM_LINEAR)
             svm.setType(cv2.ml.SVM_C_SVC)
-            svm.setC(2.67)
-            svm.setGamma(5.383)
+            svm.setC(1) #svm.setC(2.67)
+            #svm.setGamma(5.383)
+            #svm.setTermCriteria((cv2.TERM_CRITERIA_MAX_ITER, 100, 1e-6))
             svm.train(data, cv2.ml.ROW_SAMPLE, labels)
 
         if dump is not None:
@@ -99,10 +105,15 @@ class SvmOCR(ocr.OCR):
     def __nearest(self, input, svm, glyphs, verbose=False):
         """Given a svm object and an input mask will return the label of the mask for the curren svm training"""
 
-        deskewed = self.__deskew(input)
-        hogdata = self.__hog(deskewed)
-        samp = np.float32(hogdata).reshape(-1, 64)
-
+        #deskewed = self.__deskew(input)
+        #hogdata = self.__hog(deskewed)
+        #samp = np.float32(hogdata).reshape(-1, 64)
+        
+        #print(hogdata.shape, samp.shape, type(hogdata), type(samp)) #(64,) (1, 64) <class 'numpy.ndarray'> <class 'numpy.ndarray'>
+        
+        deskewed = self.__deskew(input).astype(np.float32)
+        samp = np.float32(deskewed).reshape(-1, deskewed.shape[0]*deskewed.shape[1]).astype(np.float32) # samp.cols == var_count (= w*h)
+        
         res = svm.predict(samp)[1]
 
         if verbose:
