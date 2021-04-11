@@ -7,7 +7,7 @@ from collections import namedtuple
 import random
 
 import ocr
-import matcher
+import renderer
 import neighbour
 
 class SiftOCR(ocr.OCR):
@@ -64,8 +64,8 @@ class SiftOCR(ocr.OCR):
 
     @staticmethod
     def get_train_set():
-        c = [(k, v) for k, v in matcher.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SCRIPT_COMPLEX]).items()]
-        c.extend([(k, v) for k, v in matcher.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SIMPLEX]).items()])
+        c = [(k, v) for k, v in renderer.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SCRIPT_COMPLEX]).items()]
+        c.extend([(k, v) for k, v in renderer.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SIMPLEX]).items()])
         infos = SiftOCR._get_infos(c)
         return c, infos
 
@@ -77,6 +77,6 @@ if __name__ == "__main__":
     with SiftOCR(train_set=1) as o:
 #        ch = "3"
 #        t, _ = extract.get_optimal_mask(generator.get_all_tables(ch)[ch])
-        for l, t in matcher.get_all_glyphs_refs(ocr.GLYPHS).items():
+        for l, t in renderer.get_all_glyphs_refs(ocr.GLYPHS).items():
             r = o.read(t)
             print("Has been found: {}, Was expected: {}".format(r, l))

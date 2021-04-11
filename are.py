@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 import ocr
-import matcher
+import renderer
 
 class AreaOCR(ocr.OCR):
     def __init__(self, dump=None, load=None, train_set=None, verbose=False):
@@ -50,8 +50,8 @@ class AreaOCR(ocr.OCR):
     
     @staticmethod
     def get_train_set():
-        c = [(k, v) for k, v in matcher.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SCRIPT_COMPLEX]).items()]
-        c.extend([(k, v) for k, v in matcher.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SIMPLEX]).items()])
+        c = [(k, v) for k, v in renderer.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SCRIPT_COMPLEX]).items()]
+        c.extend([(k, v) for k, v in renderer.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SIMPLEX]).items()])
         return c
 
 if __name__ == "__main__":

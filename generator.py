@@ -6,7 +6,7 @@ import numpy as np
 import random
 import math
 
-import matcher
+import renderer
 
 #special thanks to @franciscouzo
 
@@ -69,7 +69,7 @@ C_ON = [_color(0xF9BB82),  _color(0xFCCD84), _color(0xEBA170)]
 C_OFF = [_color(0x9CA594), _color(0xACB4A5), _color(0xa3a260),_color(0xBBB964), _color(0xD7DAAA), _color(0xD1D6AF)]
 def get_all_tables(glyphs, heigh=200, bezel=40, thic=20, bg=(255,255,255), n_circles=550, c_on=C_ON, c_off=C_OFF, fonts=[cv2.FONT_HERSHEY_SCRIPT_COMPLEX]):
     """Returns a dictionary with ishihara'd glyphs, parameters may be applied"""
-    return {k: ishihara(v, v.shape, 0, bg, n_circles, c_on, c_off) for k, v in matcher.get_all_glyphs_refs(glyphs, heigh, bezel, thic, fonts).items()} #FIXME inapropriate use of dict
+    return {k: ishihara(v, v.shape, 0, bg, n_circles, c_on, c_off) for k, v in renderer.get_all_glyphs_refs(glyphs, heigh, bezel, thic, fonts).items()} #FIXME inapropriate use of dict
 
 
 if __name__ == "__main__":
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         print("Saving on {}.png".format(filename))
         print("Rendering {}".format(settings["g"]))
 
-    base = matcher.render_glyph(settings["g"], 200)
+    base = renderer.render_glyph(settings["g"], 200)
     img = ishihara(base, base.shape, 0, (255,255,255), 500, settings["fg"], settings["bg"])
     cv2.imwrite("{}.png".format(filename), img)
 
