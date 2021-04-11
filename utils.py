@@ -132,21 +132,19 @@ def reduce_sections_area(cont, convert=True):
     for r in result:
         r.bound = reduce(rect_fuse, r._children)
     return result
-#print(reduce_sections([[0,0, 1,1], [1,1, 2,2], [4,4, 5,5], [0,0,2,4], [2,2,3,3]]))
 
-#a = [0,0, 4,4]
-#b = [2,2, 4,4]
-#print("{} (True)".format(rect_in_rect(b, a)))
-#print("{} (False)".format(rect_intersect(b, a)))
+assert reduce_sections([[0,0, 1,1], [1,1, 2,2], [4,4, 5,5], [0,0,2,4], [2,2,3,3]]) == [(0,0,5,5),(4,4,9,9)], "Idk"
 
-#a = [0,0, 4,4]
-#b = [1,1, 2,2]
-#c = [3,3, 5,5]
-#print("{} (True)".format(rect_intersect(a, b)))
-#print("{} (True)".format(rect_intersect(a, c)))
-#print("{} (True)".format(rect_intersect(b, a)))
-#print("{} (True)".format(rect_intersect(c, a)))
+a = [0,0, 4,4]
+b = [2,2, 4,4]
+assert rect_in_rect(b, a), "{} inside {} ".format(b, a)
+assert rect_intersect(b, a), "{} and {} intersects".format(b, a)
 
-#a = [0,0, 4,4]
-#b = [0,5, 5,5]
-#print("{} (False)".format(rect_intersect(a, b)))
+a = [0,0, 4,4]
+b = [1,1, 2,2]
+c = [3,3, 5,5]
+assert rect_intersect(a, b), "{} and {} intersects".format(a, b)
+assert rect_intersect(a, c), "{} and {} intersects".format(a, c)
+assert rect_intersect(b, a), "{} and {} intersects".format(b, a)
+assert rect_intersect(c, a), "{} and {} intersects".format(c, a)
+
