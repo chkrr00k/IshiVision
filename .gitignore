@@ -31,3 +31,5 @@ __pycache__/
 
 #accuracy logs
 logs.txt
+
+.trash
