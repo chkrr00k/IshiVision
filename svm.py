@@ -113,8 +113,8 @@ class SvmOCR(ocr.OCR):
         
         deskewed = self.__deskew(input).astype(np.float32)
         samp = np.float32(deskewed).reshape(-1, deskewed.shape[0]*deskewed.shape[1]).astype(np.float32) # samp.cols == var_count (= w*h)
-        
-        res = svm.predict(samp)[1]
+
+        res = svm.predict(samp)[1] #XXX
 
         if verbose:
             print("res:{}".format(res))

@@ -49,7 +49,7 @@ class MockOCR(OCR):
         print("Warning! MockOCR has been selected", file=sys.stderr)
 
     def read(self, img):
-        return "&"
+        return None
 
     def __enter__(self):
         return self

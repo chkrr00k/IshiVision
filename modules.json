@@ -6,7 +6,9 @@
 		"none": {"cls": "MockOCR", "mdl": "ocr"},
 		"sift": {"cls": "SiftOCR", "mdl": "sift"},
 		"gnb": {"cls": "GaussianNBOCR", "mdl": "gnb"},
-		"area" : {"cls": "AreaOCR", "mdl": "are"}
+		"area": {"cls": "AreaOCR", "mdl": "are"},
+		"sad": {"cls": "SadOCR", "mdl": "sad"},
+		"ssd": {"cls": "SsdOCR", "mdl": "sad"}
 	},
 	"default": "none"
 
