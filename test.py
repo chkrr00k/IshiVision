@@ -167,7 +167,7 @@ elif input:
         size = tuple(int(i) for i in settings["r"].split("x")[::-1])
         if verbose:
             print("Resizing to {}".format(size))
-            img = cv2.resize(img, size)
+        img = cv2.resize(img, size)
     if img is None or type(img) is not np.ndarray:
         print("Failed to load {} file".format(input))
         sys.exit(-7)
