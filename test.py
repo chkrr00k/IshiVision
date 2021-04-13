@@ -28,13 +28,19 @@ HELP_MESSAGE = """Help:
 --silent                Produce no output
 -j <json file>          Select ocr modules file
 -i, --input <file>      Read the number form the given file
+-r, --resize <size>     Resize the image before processing. Size must be in 
+                        heighxwidth format. Supports the keyword auto for autosizing
 """
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:", ["ocr=", "train=", "load=", "dump=", "verbose", "size=", "help", "debug", "accuracy=", "char=", "gtk", "silent", "input="])
+    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:r:", ["ocr=", "train=", "load=", "dump=", "verbose", "size=", "help", "debug", "accuracy=", "char=", "gtk", "silent", "input=", "resize="])
 except getopt.GetoptError:
     print("Wrong argument")
     print(HELP_MESSAGE)
+
+defaultSize, _ = cv2.getTextSize("8", cv2.FONT_HERSHEY_SIMPLEX, cv2.getFontScaleFromHeight(cv2.FONT_HERSHEY_SIMPLEX, 200), 20)
+defaultSize = (defaultSize[0]+20+40*2, defaultSize[1]+40*2)
+resize = False
 
 settings = {
         "k": None,
@@ -48,7 +54,8 @@ settings = {
         "c": None,
         "sil": False,
         "j": "modules.json",
-        "i": None
+        "i": None,
+        "r": "x".join((str(d) for d in defaultSize))
         }
 for opt, arg in opts:
     if opt in ("-k", "--ocr"):
@@ -81,6 +88,10 @@ for opt, arg in opts:
         settings["j"] = arg
     elif opt in ("-i", "--input"):
         settings["i"] = arg
+    elif opt in ("-r", "--resize"):
+        if arg != "auto":
+            settings["r"] = arg
+        resize = True
 
 debug = settings["db"]
 verbose = settings["v"]
@@ -105,6 +116,9 @@ except Exception as e:
         print(e)
     sys.exit(-4)
 
+if settings["i"] is None and resize:
+    print("-i and -r are both asserted. What am i supposed to resize?")
+    sys.exit(-8)
 if settings["l"] and settings["d"]:
     print("Setting -l and -d makes sense only if you want to copy your trainset, be aware!")
 if settings["t"] and settings["l"]:
@@ -149,6 +163,11 @@ if accuracy > 0:
         print("Accuracy: {:.2f} ({}/{})".format(hits/accuracy, hits, accuracy))
 elif input:
     img = cv2.imread(input)
+    if resize:
+        size = tuple(int(i) for i in settings["r"].split("x")[::-1])
+        if verbose:
+            print("Resizing to {}".format(size))
+            img = cv2.resize(img, size)
     if img is None or type(img) is not np.ndarray:
         print("Failed to load {} file".format(input))
         sys.exit(-7)
