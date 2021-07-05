@@ -1,5 +1,5 @@
 import os
-if os.nmae != "nt":
+if os.name != "nt":
     import gi
 
 #this fixes wrong version of Gtk used on debian 10
