@@ -30,7 +30,7 @@ HELP_MESSAGE = """Help:
 -i, --input <file>      Read the number form the given file
 -r, --resize <size>     Resize the image before processing. Size must be in 
                         heighxwidth format. Supports the keyword auto for autosizing
--p, --show              Show the images and the internal elaboragion passages
+-p, --show              Show the images and the internal elaboration passages
 """
 
 try:
