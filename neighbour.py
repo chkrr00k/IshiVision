@@ -32,7 +32,7 @@ def clean2(input):
     #input = cv2.dilate(input, el)
     input = cv2.morphologyEx(input, cv2.MORPH_CLOSE, kernel)
     
-    
+     
     return clean(input)
     
 
