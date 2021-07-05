@@ -1,0 +1,17 @@
+{
+	"ocr":{
+		"knn": {"cls": "KnnOCR", "mdl": "knn"},
+		"svm": {"cls": "SvmOCR", "mdl": "svm"},
+		"sksvm": {"cls": "SkSvmOCR", "mdl": "sksvm"},
+		"none": {"cls": "MockOCR", "mdl": "ocr"},
+		"sift": {"cls": "SiftOCR", "mdl": "sift"},
+		"gnb": {"cls": "GaussianNBOCR", "mdl": "gnb"},
+		"area": {"cls": "AreaOCR", "mdl": "are"},
+		"sad": {"cls": "SadOCR", "mdl": "sad"},
+		"ssd": {"cls": "SsdOCR", "mdl": "sad"},
+		"ncc": {"cls": "NccOCR", "mdl": "sad2"},
+		"zncc": {"cls": "ZnccOCR", "mdl": "sad2"}
+	},
+	"default": "none"
+
+}
