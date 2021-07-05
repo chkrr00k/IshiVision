@@ -30,10 +30,10 @@ def print_contours_bounding_rect(input, rects, bounds=None):
     """Returns the image in BGR space with the intresting area highlighted and all the rects shown"""
     input = cv2.cvtColor(input, cv2.COLOR_GRAY2BGR)    
     for [x, y, xx, yy] in rects:
-        cv2.rectangle(input, (x, y), (xx, yy), (255, 0, 0), 1)
+        cv2.rectangle(input, (x, y), (xx, yy), (127, 0, 0), 1)
     #actual intresting parts highlighted here
     if bounds:
-        cv2.rectangle(input, bounds[:2], bounds[2:], (0, 255, 0), 1)
-        cv2.line(input, ((input.shape[0]//2),0), (input.shape[0]//2, input.shape[1]), (0, 255, 0), 1)
+        cv2.rectangle(input, bounds[:2], bounds[2:], (10, 100, 0), 1)
+        cv2.line(input, ((input.shape[0]//2),0), (input.shape[0]//2, input.shape[1]), (10, 128, 0), 1)
 
     return input

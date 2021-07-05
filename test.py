@@ -30,10 +30,11 @@ HELP_MESSAGE = """Help:
 -i, --input <file>      Read the number form the given file
 -r, --resize <size>     Resize the image before processing. Size must be in 
                         heighxwidth format. Supports the keyword auto for autosizing
+-p, --show              Show the images and the internal elaboragion passages
 """
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:r:", ["ocr=", "train=", "load=", "dump=", "verbose", "size=", "help", "debug", "accuracy=", "char=", "gtk", "silent", "input=", "resize="])
+    opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:r:p", ["ocr=", "train=", "load=", "dump=", "verbose", "size=", "help", "debug", "accuracy=", "char=", "gtk", "silent", "input=", "resize=", "show"])
 except getopt.GetoptError:
     print("Wrong argument")
     print(HELP_MESSAGE)
@@ -55,7 +56,8 @@ settings = {
         "sil": False,
         "j": "modules.json",
         "i": None,
-        "r": "x".join((str(d) for d in defaultSize))
+        "r": "x".join((str(d) for d in defaultSize)),
+        "p": False
         }
 for opt, arg in opts:
     if opt in ("-k", "--ocr"):
@@ -92,6 +94,8 @@ for opt, arg in opts:
         if arg != "auto":
             settings["r"] = arg
         resize = True
+    elif opt in ("-p", "--show"):
+        settings["p"] = True
 
 debug = settings["db"]
 verbose = settings["v"]
@@ -147,6 +151,7 @@ size = settings["s"]
 train = size if settings["t"] else None
 silent = settings["sil"]
 input = settings["i"]
+show = settings["p"]
 
 
 
@@ -155,7 +160,7 @@ if accuracy > 0:
     with ocr_class(train_set=train, dump=dump, load=load, verbose=verbose) as o:
         for i in range(accuracy):
             c = str(i%10)
-            img, _ = extract.get_optimal_mask(generator.get_all_tables(c)[c])
+            img, _ = extract.get_optimal_mask(generator.get_all_tables(c)[c], show=show, verbose=verbose)
             r = o.read(img)
             if r == c:
                 hits += 1
@@ -173,7 +178,7 @@ elif input:
         sys.exit(-7)
 
     with ocr_class(train_set=train, dump=dump, load=load, verbose=verbose) as o:
-        img, _ = extract.get_optimal_mask(img)
+        img, _ = extract.get_optimal_mask(img, show=show, verbose=verbose)
         r = o.read(img)
     if not silent:
         print("Found {}".format(r))
@@ -182,10 +187,13 @@ else:
     if debug:
         print("Chosen '{}'".format(character))
 
-    img, _ = extract.get_optimal_mask(generator.get_all_tables(character)[character])
+    img, _ = extract.get_optimal_mask(generator.get_all_tables(character)[character], show=show, verbose=verbose)
     with ocr_class(train_set=train, dump=dump, load=load, verbose=verbose) as o:
         r = o.read(img)
 
     if not silent:
         print("Found '{}' {}".format(r, "({} was expected)".format(character) if r != character else ""))
 
+if show:
+    cv2.waitKey()
+    cv2.destroyAllWindows()

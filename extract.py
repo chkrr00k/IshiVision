@@ -10,7 +10,7 @@ import utils
 import selector
 
 @common.showtime
-def get_masks(img, remove_white=True):
+def get_masks(img, remove_white=True, show=False):
     """Gets the masks from an image using the local maxima method"""
 
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -34,6 +34,10 @@ def get_masks(img, remove_white=True):
     
     #previously 50
     lmx, groups = maxima.local(buck, popular, epsilon=40, distance=maxima.ma_dist_init(maxima.DEF_MALA_MATRIX))
+    
+    if show:
+        m = visual.create_maxima_map(buck, lmx)
+        cv2.imshow("Maxima", m)
 
     LIMIT = int((img_hsv.shape[0]*img_hsv.shape[1])/(len(groups)*4))
     result = dict()
@@ -55,8 +59,7 @@ def get_optimal_mask(img, verbose=False, stra=False, write=False, show=False):
     if verbose:
         print("Image of shape {}".format(img.shape))
 
-    ms = get_masks(img)
-
+    ms = get_masks(img, show=show)
     scores = list()
 
     for n, m in ms.items():
@@ -81,11 +84,17 @@ def get_optimal_mask(img, verbose=False, stra=False, write=False, show=False):
         
         if show:
             #compress the rectangles that are superimposed to eachothers to have only the main ones
-            cv2.imshow("{} Mask with main contourns".format(n), visual.print_contours_bounding_rect(m, utils.reduce_sections(rects), bounds))
+            cbr_map = visual.print_contours_bounding_rect(m, utils.reduce_sections(rects), bounds)
+            
+            i = 1
+            for l in selector.get_score_string(*sc, n=n).split("\n"):
+                cv2.putText(cbr_map, "{}".format(l), (1, 5+(i*10)), cv2.FONT_HERSHEY_SIMPLEX, .25, (0,140,200), 1, cv2.LINE_AA)
+                i += 1
+            cv2.imshow("{} Mask with main contourns".format(n), cbr_map)
 
     i = selector.rank(scores, verbose=verbose)
     if verbose:
-        print("Best fit found: {}".format(i))
+        print("Best fit found: {}, {}".format(i, list(ms.items())[i][0]))
     n, best_fit = list(ms.items())[i]
     return best_fit, n
 
