@@ -69,5 +69,6 @@ It's also possible to generate custom Ishiara plates for testing. To do that run
   
 ### Credits
 This program was made for a Computer Vision course in a Master Degree in Computer Engineering by:  
-- davidegiordano [davide.giordano6@studio.unibo.it]
-- chkrr00k [chkrr00k@cock.li]
+- davidegiordano [davide.giordano6@studio.unibo.it]  
+- chkrr00k [chkrr00k@cock.li]  
+(Code was discussed before actual implementation, don't consider commit numbers as an indication of work done per person)
