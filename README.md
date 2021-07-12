@@ -7,6 +7,11 @@ Computer Vision Based System to read the numbers in an Ishihara Plate test
 - Various OCR algorithm such as:
   - kNN
   - SVM
+  - GNB
+  - Area matching
+  - SSD
+  - SAD
+  - SIFT
 
 ### Documentation
 See <file.pdf here> for more informations
@@ -25,6 +30,27 @@ See <file.pdf here> for more informations
 `--gkt`                   Enables gkt fixes for debian 10 and OpenCV 3.something  
 `--silent`                Produce no output  
 `-j <json file>`          Select ocr modules file  
+`-p, --show`              Show the images and the internal elaboration passages  
+
+## Available−kparameter 
+- `none` - the default test one, will not return a result  
+- `sift` - the sift ocr implementation will be run, only -t is supported and -l, -d may not be used.  
+- `knn` - the knn ocr will be run, it will require either a data set passed via -l or to generate one via -t.  
+- `svm` - the svm ocr will be run, it will require either a data set passed via -l or to generate one via-t.  
+- `sksvm` - the sksvm ocr will be run, it will require either a data set passed via -l or to generate onevia -t.  
+- `gnb` - the gnb ocr will be run, it will require either a data set passed via -l or to generate one via -t.  
+- `area` - the area ocr will be run, only -t is supported and -l, -d may not be used.  
+- `sad` - the sad ocr will be run, only -t is supported and -l, -d may not be used.  
+- `ssd` - the ssd ocr will be run, only -t is supported and -l, -d may not be used
+
+# Examples
+Training a kNN on a 10 sized train set and checking the accuracy with30 generated images for two consecutive times  
+`$ python3 test.py -k knn -d data_set -t -s 10 -a 30 --verbose`  
+`$ python3 test.py -k knn -l data_set -a 30 --verbose`  
+Run to detect the number 0 in a generated ishihara plate with area matching  
+`$ python3 test.py -k area -t --char 0 --verbose --show`  
+Run to calculate accuracy with 10 images in a generated ishihara plate with area matching  
+`$ python3 test.py -k area -t --accuracy 10 --verbose --show`  
 
 ### Credits
 This program was made for a Computer Vision course in a Master Degree in Computer Engineering by:  
