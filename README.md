@@ -32,7 +32,7 @@ See <file.pdf here> for more informations
 `-j <json file>`          Select ocr modules file  
 `-p, --show`              Show the images and the internal elaboration passages  
 
-## Available−kparameter 
+## Available −k parameter 
 - `none` - the default test one, will not return a result  
 - `sift` - the sift ocr implementation will be run, only -t is supported and -l, -d may not be used.  
 - `knn` - the knn ocr will be run, it will require either a data set passed via -l or to generate one via -t.  
@@ -43,7 +43,7 @@ See <file.pdf here> for more informations
 - `sad` - the sad ocr will be run, only -t is supported and -l, -d may not be used.  
 - `ssd` - the ssd ocr will be run, only -t is supported and -l, -d may not be used
 
-# Examples
+### Examples
 Training a kNN on a 10 sized train set and checking the accuracy with30 generated images for two consecutive times  
 `$ python3 test.py -k knn -d data_set -t -s 10 -a 30 --verbose`  
 `$ python3 test.py -k knn -l data_set -a 30 --verbose`  
@@ -52,6 +52,17 @@ Run to detect the number 0 in a generated ishihara plate with area matching
 Run to calculate accuracy with 10 images in a generated ishihara plate with area matching  
 `$ python3 test.py -k area -t --accuracy 10 --verbose --show`  
 
+# Generator
+It's also possible to generate custom Ishiara plates for testing. To do that run `generator.py`.  
+
+## Help
+`-h, --help`                  Displays this help  
+`-g, --glyph <glyph>`         Render the given glyph  
+`bg <comma separated hex>`   Uses the given colors for the background  (e.g "0x000000, 0xAAAAAA")  
+`-fg <comma separated hex>`   Uses the given colors for the foreground  
+`-v, --verbose`               Verbose prints  
+`<file name>`                 Will be saved as a .PNG regardless  
+  
 ### Credits
 This program was made for a Computer Vision course in a Master Degree in Computer Engineering by:  
 - davidegiordano [davide.giordano6@studio.unibo.it]
