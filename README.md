@@ -1,6 +1,10 @@
 
 # IshiVision
-Computer Vision Based System to read the numbers in an Ishihara Plate test
+Computer Vision Based System to read the numbers in an Ishihara Plate test  
+### Important note
+Under systems like Debian 10 with Cinnamon DE an issues with gtk is present, if that happens to you go to the `common.py` file and add:  
+`gi.require_version("Gtk", "2.0")`  
+to fix the issue. Any gi/gtk issues can be traced to that missing/extra line depending from your installation.
 
 ## Used technology:
 - Local maxima method to extract the dominant colors per each plate
