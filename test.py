@@ -186,8 +186,10 @@ else:
     character = character if character is not None else random.choice("1234567890")
     if debug:
         print("Chosen '{}'".format(character))
-
-    img, _ = extract.get_optimal_mask(generator.get_all_tables(character)[character], show=show, verbose=verbose)
+    plate = generator.get_all_tables(character)[character]
+    if show:
+        cv2.imshow("Generated from: '{}'".format(character), plate)
+    img, _ = extract.get_optimal_mask(plate, show=show, verbose=verbose)
     with ocr_class(train_set=train, dump=dump, load=load, verbose=verbose) as o:
         r = o.read(img)
 
