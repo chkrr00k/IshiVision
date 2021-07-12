@@ -16,7 +16,7 @@ import generator
 HELP_MESSAGE = """Help:
 -h, --help              Displays this help
 -k, --ocr <type>        Select the type of ocr
--t, --train             Trains the ocr
+-t, --train             Trains or set up the ocr
 -s, --size <int>        Selects the size of the train set [default = 2]
 -l, --load <file>       Loads the trained file
 -d, --dump <file>       Saves the trained data
@@ -27,7 +27,7 @@ HELP_MESSAGE = """Help:
 --gkt                   Enables gkt fixes for debian 10 and OpenCV 3.something
 --silent                Produce no output
 -j <json file>          Select ocr modules file
--i, --input <file>      Read the number form the given file
+-i, --input <file>      Read the number form the given file.
 -r, --resize <size>     Resize the image before processing. Size must be in 
                         heighxwidth format. Supports the keyword auto for autosizing
 -p, --show              Show the images and the internal elaboration passages
