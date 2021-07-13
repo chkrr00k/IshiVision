@@ -42,6 +42,7 @@ def approximate(img, e=.006):
 #    cv2.imshow("A", sho)
     return sho
 
+## hic sunt trash code
 #if __name__ == "__main__":
 #    c = get_all_glyphs_refs("1234567890")
 #    print("Calculated {} tables".format(len(c)))

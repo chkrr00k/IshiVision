@@ -8,7 +8,7 @@ import math
 
 import renderer
 
-#special thanks to @franciscouzo
+#special thanks to @franciscouzo who told us that it was possible to generate plates
 
 _color = lambda c: (c & 255, (c >> 8) & 255, (c >> 16) & 255)
 

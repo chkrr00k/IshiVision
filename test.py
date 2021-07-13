@@ -33,6 +33,7 @@ HELP_MESSAGE = """Help:
 -p, --show              Show the images and the internal elaboration passages
 """
 
+# input parameters parsing
 try:
     opts, args = getopt.getopt(sys.argv[1:], "k:tl:d:vs:ha:c:j:i:r:p", ["ocr=", "train=", "load=", "dump=", "verbose", "size=", "help", "debug", "accuracy=", "char=", "gtk", "silent", "input=", "resize=", "show"])
 except getopt.GetoptError:
@@ -135,6 +136,7 @@ if len(list(filter(lambda a: a, [settings["a"] > 0, settings["c"] is not None, s
     print("Either --accuracy test, --char or --input may be specified")
     sys.exit(-5)
 
+#Dynamic libraries loading
 try:
     m = importlib.import_module(settings["k"]["mdl"]) # dynamic module import
     ocr_class = getattr(m, settings["k"]["cls"]) # given the module m, get the requested class
@@ -154,7 +156,7 @@ input = settings["i"]
 show = settings["p"]
 
 
-
+#accuracy test
 if accuracy > 0:
     hits = 0
     with ocr_class(train_set=train, dump=dump, load=load, verbose=verbose) as o:
@@ -166,6 +168,7 @@ if accuracy > 0:
                 hits += 1
     if not silent:
         print("Accuracy: {:.2f} ({}/{})".format(hits/accuracy, hits, accuracy))
+#input image test
 elif input:
     img = cv2.imread(input)
     if resize:
@@ -182,6 +185,7 @@ elif input:
         r = o.read(img)
     if not silent:
         print("Found {}".format(r))
+#test on single table
 else:
     character = character if character is not None else random.choice("1234567890")
     if debug:

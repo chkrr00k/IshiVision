@@ -6,6 +6,7 @@ import common
 import math
 
 def _get_neighbourhood(base, coords, radius=1):
+    """Returns the neighbour of a given point in a specific radious"""
     x, y = coords
     ux, lx = x-radius if x-radius > 0 else 0, x+radius+1 if x+radius+1 < base.shape[0]-1 else base.shape[0]-1
     uy, ly = y-radius if y-radius > 0 else 0, y+radius+1 if y+radius+1 < base.shape[1]-1 else base.shape[1]-1
@@ -13,6 +14,7 @@ def _get_neighbourhood(base, coords, radius=1):
     return base[ux:lx, uy:ly]
 
 def clean(input):
+    """Performs a preliminary cleaing of the image using a custom filter based on neighbours"""
     result = np.zeros(input.shape, dtype=np.uint8)
 
     for c, v in np.ndenumerate(input):
@@ -23,6 +25,7 @@ def clean(input):
     return result
 
 def clean2(input):
+    """Clean the inout image by performing a series of dilations and erosion operations"""
     dil_factor = int(math.floor(math.log10(abs(input.shape[0])))) + 2
     el = cv2.getStructuringElement(cv2.MORPH_RECT, (int(2*dil_factor + 1), int(2*dil_factor + 1)))
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 6))

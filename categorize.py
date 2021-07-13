@@ -14,6 +14,7 @@ def get_buckets_naive(input):
     return result
 
 def get_buckets(input):
+    """Returns the buckets in an image"""
     result = dict()
     tmp = None
     for c, v in np.ndenumerate(input):
