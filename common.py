@@ -4,7 +4,8 @@ if os.name != "nt":
 
 #this fixes wrong version of Gtk used on debian 10
 #XXX this has to be removed
-    gi.require_version("Gtk", "2.0")
+    if os.uname()[1] == "melody64":
+        gi.require_version("Gtk", "2.0")
 
 from functools import wraps
 from time import time
