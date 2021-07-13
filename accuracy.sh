@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#declare -a TYPES=("sift" "knn" "svm" "gnb" "sksvm" "area" "sad" "ssd" "ncc" "zncc")
-declare -a TYPES=("sad" "ssd" "ncc" "zncc")
+declare -a TYPES=("sift" "knn" "svm" "gnb" "sksvm" "area" "sad" "ssd" "ncc" "zncc")
+#declare -a TYPES=("sad" "ssd" "ncc" "zncc")
 declare -a TRAIN_SETS=("10" "20" "100")
 TEST_SET=50
 FILE_NAME="data_set"
