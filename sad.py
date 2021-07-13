@@ -7,6 +7,9 @@ import ocr
 import renderer
 
 class SlidingOCR(ocr.OCR):
+    """Generic sliding window implementation.
+    Properly subclassing this class will allow to not implement the window everytime
+    """
     def __init__(self, dump=None, load=None, train_set=None, verbose=None):
         if load is not None or dump is not None:
             raise ValueError("Dump and load are not supported for this ocr")
@@ -52,6 +55,8 @@ class SlidingOCR(ocr.OCR):
         c.extend([(k, v) for k, v in renderer.get_all_glyphs_refs(ocr.GLYPHS, fonts=[cv2.FONT_HERSHEY_SIMPLEX]).items()])
         return c
 
+#The modularity of the code allows us to only implementing these via subclassing of a sliding window algorithm
+#A note: since the ncc and zncc are similarity their value should be maximized and not minimized: thus the function returns a negative value of the actual returned theorical value.
 class SadOCR(SlidingOCR):
     def __init__(self, dump=None, load=None, train_set=None, verbose=None):
         super().__init__(dump=dump, load=load, train_set=train_set, verbose=verbose)
@@ -65,3 +70,20 @@ class SsdOCR(SlidingOCR):
 
     def read(self, img):
         return super().read(img, lambda i, t: np.sum(np.square(i - t)))
+        
+class NccOCR(SlidingOCR):
+    def __init__(self, dump=None, load=None, train_set=None, verbose=None):
+        super().__init__(dump=dump, load=load, train_set=train_set, verbose=verbose)
+
+    def read(self, img):
+        return super().read(img, lambda i, t: -((np.sum(i * t)) / (np.sqrt(np.sum(np.square(i))) * np.sqrt(np.sum(np.square(t))))))
+
+class ZnccOCR(SlidingOCR):
+    def __init__(self, dump=None, load=None, train_set=None, verbose=None):
+        super().__init__(dump=dump, load=load, train_set=train_set, verbose=verbose)
+    
+    def __mean(self, img):
+        return 1/(img.shape[0] * img.shape[1]) * np.sum(img)
+
+    def read(self, img):
+        return super().read(img, lambda i, t: -((np.sum((i - self.__mean(i)) * (t - self.__mean(t))) / (np.sqrt(np.sum(np.square(i - self.__mean(i)))) * np.sqrt(np.sum(np.square(t - self.__mean(t))))))))
