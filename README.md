@@ -18,7 +18,7 @@ to fix the issue. Any gi/gtk issues can be traced to that missing/extra line dep
   - SIFT
 
 ### Documentation
-See <file.pdf here> for more informations
+See [here](https://chkrr00k.github.io/ishivision/doc.pdf) for more informations
 
 ## Help:
 `-h, --help`              Displays this help  
